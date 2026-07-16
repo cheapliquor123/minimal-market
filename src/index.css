@@ -4,46 +4,86 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(95.16% 0.0242 343.23);
-  --secondary-background: oklch(100% 0 0);
-  --foreground: oklch(0% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(71.5% 0.197 354.23);
-  --border: oklch(0% 0 0);
-  --ring: oklch(0% 0 0);
-  --overlay: oklch(0% 0 0 / 0.8);
-  --shadow: 4px 4px 0px 0px var(--border);
-  --chart-1: #FC64AB;
-  --chart-2: #FACC00;
-  --chart-3: #FF7A05;
-  --chart-4: #FF4D50;
-  --chart-5: #7A83FF;
+  --background: #fff8f0;
+  --secondary-background: #ffffff;
+  --foreground: #000000;
+  --muted-foreground: #555555;
+
+  --main: #ff6b9d;
+  --main-foreground: #000000;
+  --secondary: #ffd93d;
+  --secondary-foreground: #000000;
+  --success: #6bcb77;
+  --success-foreground: #000000;
+  --warning: #ff7a05;
+  --warning-foreground: #000000;
+  --destructive: #ff4d50;
+  --destructive-foreground: #000000;
+  --info: #7a83ff;
+  --info-foreground: #000000;
+
+  --border: #000000;
+  --ring: #000000;
+  --overlay: rgba(0, 0, 0, 0.8);
+  --shadow: 4px 4px 0px 0px #000000;
+
+  --chart-1: #ff6b9d;
+  --chart-2: #ffd93d;
+  --chart-3: #ff7a05;
+  --chart-4: #ff4d50;
+  --chart-5: #7a83ff;
   --chart-active-dot: #000;
 }
 
 .dark {
-  --background: oklch(26.3% 0.054 358.23);
-  --secondary-background: oklch(23.93% 0 0);
-  --foreground: oklch(92.49% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(65.98% 0.2407 358.64);
-  --border: oklch(0% 0 0);
-  --ring: oklch(100% 0 0);
-  --shadow: 4px 4px 0px 0px var(--border);
-  --chart-1: #FB3290;
-  --chart-2: #E0B700;
-  --chart-3: #EB6D00;
-  --chart-4: #FF6669;
-  --chart-5: #7A83FF;
+  --background: #1a1025;
+  --secondary-background: #2a1f35;
+  --foreground: #f0e6ff;
+  --muted-foreground: #a89bc2;
+
+  --main: #ff6b9d;
+  --main-foreground: #000000;
+  --secondary: #ffd93d;
+  --secondary-foreground: #000000;
+  --success: #6bcb77;
+  --success-foreground: #000000;
+  --warning: #ff7a05;
+  --warning-foreground: #000000;
+  --destructive: #ff4d50;
+  --destructive-foreground: #000000;
+  --info: #7a83ff;
+  --info-foreground: #000000;
+
+  --border: #000000;
+  --ring: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.85);
+  --shadow: 4px 4px 0px 0px #000000;
+
+  --chart-1: #ff6b9d;
+  --chart-2: #ffd93d;
+  --chart-3: #ff7a05;
+  --chart-4: #ff4d50;
+  --chart-5: #7a83ff;
   --chart-active-dot: #fff;
 }
 
 @theme inline {
   --color-main: var(--main);
+  --color-main-foreground: var(--main-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-background: var(--background);
   --color-secondary-background: var(--secondary-background);
   --color-foreground: var(--foreground);
-  --color-main-foreground: var(--main-foreground);
+  --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-overlay: var(--overlay);
   --color-ring: var(--ring);
@@ -61,14 +101,29 @@
   --shadow-shadow: var(--shadow);
   --font-weight-base: 600;
   --font-weight-heading: 900;
+  --font-family-base: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-family-heading: "Geist", ui-sans-serif, system-ui, sans-serif;
 }
-  
+
 @layer base {
   body {
-    @apply text-foreground font-base bg-background;
+    @apply text-foreground font-base;
+    font-family: var(--font-family-base);
+    background-color: var(--background);
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
-  h1, h2, h3, h4, h5, h6{
+  .dark body {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
+    font-family: var(--font-family-heading);
   }
 }
