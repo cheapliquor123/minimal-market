@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import { Menu, CheckSquare, Calendar, Home } from "lucide-react"
+import { Menu, CheckSquare, Calendar, Home, StickyNote, Repeat } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import {
   Sheet,
@@ -14,8 +14,9 @@ import { cn } from "@/shared/lib/utils"
 const navLinks = [
   { label: "Workspace", path: "/", icon: Home },
   { label: "Tasks", path: "/tasks", icon: CheckSquare },
-  { label: "Habits", path: "/habits", icon: Calendar },
+  { label: "Habits", path: "/habits", icon: Repeat },
   { label: "Calendar", path: "/calendar", icon: Calendar },
+  { label: "Notes", path: "/notes", icon: StickyNote },
 ]
 
 export function NavbarMobile() {
