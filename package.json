@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@clerk/react-router": "^3.5.12",
+    "@clerk/ui": "^1.25.5",
     "@fontsource-variable/geist": "^5.2.9",
     "@radix-ui/react-alert-dialog": "^1.1.19",
     "@radix-ui/react-avatar": "^1.2.2",
