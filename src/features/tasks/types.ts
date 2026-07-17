@@ -11,6 +11,8 @@ export interface Task {
   dueDate: string | null
   priority: TaskPriority
   category: string | null
+  carryForward: boolean
+  missedCount: number
   createdAt: string
   updatedAt: string
 }
@@ -21,6 +23,7 @@ export interface CreateTaskInput {
   dueDate?: string
   priority?: TaskPriority
   category?: string
+  carryForward?: boolean
 }
 
 export interface UpdateTaskInput {
@@ -30,6 +33,7 @@ export interface UpdateTaskInput {
   priority?: TaskPriority
   category?: string | null
   completed?: boolean
+  carryForward?: boolean | null
 }
 
 export interface TaskFilters {

@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog"
 import { cn } from "@/shared/lib/utils"
+import { Checkbox } from "@/shared/components/ui/checkbox"
 import { useCategories, useCreateCategory } from "../hooks/use-categories"
 import { CATEGORY_COLORS } from "../types"
 import type { Task, CreateTaskInput, TaskPriority } from "../types"
@@ -211,6 +212,7 @@ function TaskFormInner({
   )
   const [priority, setPriority] = useState<TaskPriority>(task?.priority ?? "medium")
   const [category, setCategory] = useState(task?.category ?? "")
+  const [carryForward, setCarryForward] = useState(task?.carryForward ?? false)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -222,6 +224,7 @@ function TaskFormInner({
       dueDate: dueDate ? format(dueDate, "yyyy-MM-dd") : undefined,
       priority,
       category: category || undefined,
+      carryForward,
     })
   }
 
@@ -302,6 +305,29 @@ function TaskFormInner({
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Checkbox
+          id="carry-forward"
+          checked={carryForward}
+          onCheckedChange={(checked) => setCarryForward(checked ?? false)}
+          disabled={!dueDate}
+        />
+        <label
+          htmlFor="carry-forward"
+          className={cn(
+            "text-xs font-heading cursor-pointer select-none",
+            !dueDate && "text-muted-foreground cursor-not-allowed",
+          )}
+        >
+          Carry forward
+          <span className="text-muted-foreground font-base ml-1">
+            {dueDate
+              ? "\u2014 Move to next day if not completed"
+              : "\u2014 Set a due date first"}
+          </span>
+        </label>
       </div>
 
       <div className="flex flex-col gap-1.5">

@@ -9,6 +9,7 @@ import { useCreateHabit, useUpdateHabit } from "@/features/habits/hooks/use-habi
 import { useTaskDialogStore } from "@/stores/task-dialog-store"
 import { useHabitDialogStore } from "@/stores/habit-dialog-store"
 import { startTodayRefresh, stopTodayRefresh } from "@/stores/date-store"
+import { activeTasksApi } from "@/features/tasks/api/api-switch"
 import type { CreateTaskInput } from "@/features/tasks/types"
 import type { CreateHabitInput } from "@/features/habits/types"
 
@@ -22,6 +23,7 @@ export function RootLayout() {
   const qc = useQueryClient()
 
   useEffect(() => {
+    activeTasksApi.carryForward().catch(() => {})
     startTodayRefresh(() => qc.invalidateQueries())
     return () => stopTodayRefresh()
   }, [qc])
