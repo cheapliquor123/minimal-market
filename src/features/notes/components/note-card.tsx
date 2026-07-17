@@ -1,4 +1,4 @@
-import { Pin, Trash2 } from "lucide-react"
+import { Pin } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
 import { getNoteStyle } from "@/shared/lib/note-colors"
 import type { Note } from "../types"
@@ -6,51 +6,39 @@ import type { Note } from "../types"
 interface NoteCardProps {
   note: Note
   onClick: (note: Note) => void
-  onDelete: (id: string) => void
 }
 
-export function NoteCard({ note, onClick, onDelete }: NoteCardProps) {
+export function NoteCard({ note, onClick }: NoteCardProps) {
+  function handleClick() {
+    const selection = window.getSelection()
+    if (selection && selection.toString().length > 0) return
+    onClick(note)
+  }
+
   return (
     <div
       className={cn(
-        "group relative w-full break-inside-avoid rounded-base border-2 border-border p-4 text-left transition-all",
+        "group relative w-full rounded-base border-2 border-border p-4 text-left transition-all select-text",
         "hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-shadow",
         !note.color && "bg-secondary-background",
       )}
       style={getNoteStyle(note.color)}
+      onClick={handleClick}
     >
-      <button
-        type="button"
-        onClick={() => onClick(note)}
-        className="w-full"
-      >
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-heading text-sm leading-tight line-clamp-2 flex-1">
-            {note.title}
-          </h3>
-          {note.pinned && (
-            <Pin className="size-3.5 shrink-0 fill-current text-main" />
-          )}
-        </div>
-
-        {note.content && (
-          <p className="mt-1.5 text-xs text-muted-foreground whitespace-pre-wrap line-clamp-6">
-            {note.content}
-          </p>
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="font-heading text-sm leading-tight line-clamp-2 flex-1 select-text">
+          {note.title}
+        </h3>
+        {note.pinned && (
+          <Pin className="size-3.5 shrink-0 fill-current text-main" />
         )}
-      </button>
+      </div>
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          onDelete(note.id)
-        }}
-        className="absolute bottom-2 right-2 size-7 items-center justify-center rounded-base border-2 border-border bg-background opacity-0 transition-all hover:bg-destructive hover:text-destructive-foreground hover:border-destructive group-hover:flex hidden"
-        title="Delete note"
-      >
-        <Trash2 className="size-3.5" />
-      </button>
+      {note.content && (
+        <p className="mt-1.5 text-xs text-muted-foreground whitespace-pre-wrap line-clamp-6 select-text">
+          {note.content}
+        </p>
+      )}
     </div>
   )
 }

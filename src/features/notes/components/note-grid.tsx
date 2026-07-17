@@ -1,26 +1,32 @@
-import { FileText, Plus } from "lucide-react"
+import { FileText, FolderPlus, Plus } from "lucide-react"
 import { Input } from "@/shared/components/ui/input"
 import { Button } from "@/shared/components/ui/button"
 import { cn } from "@/shared/lib/utils"
 import { NOTE_COLORS } from "@/shared/lib/note-colors"
 import { NoteCard } from "./note-card"
-import type { Note } from "../types"
+import { FolderCard } from "./folder-card"
+import type { Note, Folder } from "../types"
 
 interface NoteGridProps {
   notes: Note[]
+  folders: Folder[]
   isLoading?: boolean
+  currentFolderId: string | null
   search: string
   onSearchChange: (search: string) => void
   colorFilter: string | null
   onColorFilterChange: (color: string | null) => void
   onNoteClick: (note: Note) => void
-  onDelete: (id: string) => void
-  onCreate: () => void
+  onCreateNote: () => void
+  onFolderClick: (folder: Folder) => void
+  onEditFolder: (folder: Folder) => void
+  onDeleteFolder: (id: string) => void
+  onCreateFolder: () => void
 }
 
 function NoteSkeleton() {
   return (
-    <div className="break-inside-avoid rounded-base border-2 border-border bg-secondary-background p-4 animate-pulse">
+    <div className="rounded-base border-2 border-border bg-secondary-background p-4 animate-pulse">
       <div className="h-4 w-2/3 rounded bg-border mb-2" />
       <div className="h-3 w-full rounded bg-border mb-1" />
       <div className="h-3 w-4/5 rounded bg-border" />
@@ -28,26 +34,51 @@ function NoteSkeleton() {
   )
 }
 
+function FolderSkeleton() {
+  return (
+    <div className="rounded-base border-2 border-border bg-secondary-background p-4 animate-pulse">
+      <div className="flex items-center gap-3">
+        <div className="size-8 rounded-base border-2 border-border bg-border" />
+        <div className="h-3 w-24 rounded bg-border" />
+      </div>
+    </div>
+  )
+}
+
 export function NoteGrid({
   notes,
+  folders,
   isLoading,
+  currentFolderId,
   search,
   onSearchChange,
   colorFilter,
   onColorFilterChange,
   onNoteClick,
-  onDelete,
-  onCreate,
+  onCreateNote,
+  onFolderClick,
+  onEditFolder,
+  onDeleteFolder,
+  onCreateFolder,
 }: NoteGridProps) {
   if (isLoading) {
     return (
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <NoteSkeleton key={i} />
-        ))}
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <FolderSkeleton key={i} />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <NoteSkeleton key={i} />
+          ))}
+        </div>
       </div>
     )
   }
+
+  const isEmpty = folders.length === 0 && notes.length === 0
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,7 +89,19 @@ export function NoteGrid({
           onChange={(e) => onSearchChange(e.target.value)}
           className="flex-1"
         />
-        <Button onClick={onCreate} className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]">
+        {!currentFolderId && (
+          <Button
+            onClick={onCreateFolder}
+            className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
+          >
+            <FolderPlus className="size-4" />
+            Folder
+          </Button>
+        )}
+        <Button
+          onClick={onCreateNote}
+          className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
+        >
           <Plus className="size-4" />
           Note
         </Button>
@@ -90,7 +133,7 @@ export function NoteGrid({
         })}
       </div>
 
-      {notes.length === 0 ? (
+      {isEmpty ? (
         <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
           <div className="flex size-12 items-center justify-center rounded-base border-2 border-border bg-secondary-background">
             <FileText className="size-6 text-muted-foreground" />
@@ -98,22 +141,52 @@ export function NoteGrid({
           <div>
             <p className="font-heading text-sm">No notes yet</p>
             <p className="text-xs text-muted-foreground">
-              {search || colorFilter ? "No notes match your filters." : "Create your first note to get started."}
+              {search || colorFilter ? "No notes match your filters." : "Create your first note or folder to get started."}
             </p>
           </div>
           {!search && !colorFilter && (
-            <Button onClick={onCreate} size="sm" className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]">
-              <Plus className="size-3" />
-              Create note
-            </Button>
+            <div className="flex gap-2">
+              {!currentFolderId && (
+                <Button onClick={onCreateFolder} size="sm" className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]">
+                  <FolderPlus className="size-3" />
+                  Create folder
+                </Button>
+              )}
+              <Button onClick={onCreateNote} size="sm" className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]">
+                <Plus className="size-3" />
+                Create note
+              </Button>
+            </div>
           )}
         </div>
       ) : (
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-          {notes.map((note) => (
-            <NoteCard key={note.id} note={note} onClick={onNoteClick} onDelete={onDelete} />
-          ))}
-        </div>
+        <>
+          {!currentFolderId && folders.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {folders.map((folder) => (
+                <FolderCard
+                  key={folder.id}
+                  folder={folder}
+                  onClick={onFolderClick}
+                  onEdit={onEditFolder}
+                  onDelete={onDeleteFolder}
+                />
+              ))}
+            </div>
+          )}
+
+          {notes.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {notes.map((note) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  onClick={onNoteClick}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
