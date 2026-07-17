@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter } from "react-router-dom"
 import { RootLayout } from "./root-layout"
-import { WorkspacePage, TasksPage, HabitsPage, CalendarPage } from "./pages"
+import { WorkspacePage, TasksPage, HabitsPage, CalendarPage, NotesPage } from "./pages"
 import { Suspense } from "react"
 import { ErrorBoundary } from "@/shared/components/error-boundary"
 
@@ -32,6 +32,7 @@ export const router = createBrowserRouter([
       { path: "tasks", element: withSuspense(TasksPage) },
       { path: "habits", element: withSuspense(HabitsPage) },
       { path: "calendar", element: withSuspense(CalendarPage) },
+      { path: "notes", element: withSuspense(NotesPage) },
     ],
   },
 ])

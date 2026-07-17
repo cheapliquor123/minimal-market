@@ -42,4 +42,8 @@ export const tasksApi = {
   async remove(id: string): Promise<void> {
     return api.delete<void>(`/api/tasks/${id}`)
   },
+
+  async carryForward(): Promise<{ tasksCarriedForward: number }> {
+    return api.post<{ tasksCarriedForward: number }>("/api/tasks/carryforward")
+  },
 }

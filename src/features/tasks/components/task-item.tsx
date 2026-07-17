@@ -1,4 +1,4 @@
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2, Repeat } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Badge } from "@/shared/components/ui/badge"
 import { Checkbox } from "@/shared/components/ui/checkbox"
@@ -77,6 +77,14 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
             >
               {due.label}
             </span>
+          )}
+          {task.carryForward && task.missedCount > 0 && (
+            <Badge variant="warning" className="text-[10px]">
+              Missed {task.missedCount}x
+            </Badge>
+          )}
+          {task.carryForward && task.missedCount === 0 && (
+            <Repeat className="size-3 text-muted-foreground" />
           )}
           {task.category && (
             <>

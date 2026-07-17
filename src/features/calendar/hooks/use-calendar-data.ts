@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { tasksApi } from "@/features/tasks/api/tasks"
+import { activeTasksApi as tasksApi } from "@/features/tasks/api/api-switch"
 import type { Task } from "@/features/tasks/types"
 import { toDateStr } from "../utils"
 

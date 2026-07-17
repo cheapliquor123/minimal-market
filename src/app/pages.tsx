@@ -12,3 +12,6 @@ export const HabitsPage = lazy(() =>
 export const CalendarPage = lazy(() =>
   import("@/features/calendar").then((m) => ({ default: m.CalendarPage })),
 )
+export const NotesPage = lazy(() =>
+  import("@/features/notes").then((m) => ({ default: m.NotesPage })),
+)

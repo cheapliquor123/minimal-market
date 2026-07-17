@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import { CheckSquare, Calendar, Home, Repeat } from "lucide-react"
+import { CheckSquare, Calendar, Home, Repeat, StickyNote } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
 import { NavbarLogo } from "./navbar-logo"
 import { NavbarActions } from "./navbar-actions"
@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Tasks", path: "/tasks", icon: CheckSquare },
   { label: "Habits", path: "/habits", icon: Repeat },
   { label: "Calendar", path: "/calendar", icon: Calendar },
+  { label: "Notes", path: "/notes", icon: StickyNote },
 ]
 
 export function Navbar() {
