@@ -1,9 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
+import React, { Suspense } from "react"
 import { createBrowserRouter } from "react-router-dom"
+import { ClerkProvider } from "@clerk/react-router"
+import { shadcn } from "@clerk/ui/themes"
 import { RootLayout } from "./root-layout"
 import { WorkspacePage, TasksPage, HabitsPage, CalendarPage, NotesPage } from "./pages"
-import { Suspense } from "react"
 import { ErrorBoundary } from "@/shared/components/error-boundary"
+
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+const SignInPage = () => import("@/features/auth/pages/sign-in-page")
+const SignUpPage = () => import("@/features/auth/pages/sign-up-page")
 
 function PageLoader() {
   return (
@@ -23,7 +30,28 @@ function withSuspense(Page: React.ComponentType) {
   )
 }
 
+function LazyPage({ importFn }: { importFn: () => Promise<{ default: React.ComponentType }> }) {
+  const Page = React.lazy(() => importFn())
+  return withSuspense(Page)
+}
+
 export const router = createBrowserRouter([
+  {
+    path: "/sign-in/*",
+    element: (
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ theme: shadcn }}>
+        <LazyPage importFn={SignInPage} />
+      </ClerkProvider>
+    ),
+  },
+  {
+    path: "/sign-up/*",
+    element: (
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ theme: shadcn }}>
+        <LazyPage importFn={SignUpPage} />
+      </ClerkProvider>
+    ),
+  },
   {
     path: "/",
     element: <RootLayout />,
