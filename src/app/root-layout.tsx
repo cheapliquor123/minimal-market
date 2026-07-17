@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Navigate } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 import { Show } from "@clerk/react-router"
 import { ClerkProvider } from "@clerk/react-router"
@@ -14,7 +14,6 @@ import { useHabitDialogStore } from "@/stores/habit-dialog-store"
 import { startTodayRefresh, stopTodayRefresh } from "@/stores/date-store"
 import { activeTasksApi } from "@/features/tasks/api/api-switch"
 import { AuthTokenProvider } from "@/shared/components/auth/auth-token-provider"
-import { buttonVariants } from "@/shared/components/ui/button"
 import type { CreateTaskInput } from "@/features/tasks/types"
 import type { CreateHabitInput } from "@/features/habits/types"
 
@@ -26,37 +25,23 @@ if (!PUBLISHABLE_KEY) {
 
 export function RootLayout() {
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ theme: shadcn }}>
+    <ClerkProvider
+      publishableKey={PUBLISHABLE_KEY}
+      appearance={{ theme: shadcn }}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+    >
       <AuthTokenProvider>
         <Show when="signed-in">
           <AuthenticatedLayout />
         </Show>
         <Show when="signed-out">
-          <SignedOutGate />
+          <Navigate to="/sign-in" replace />
         </Show>
       </AuthTokenProvider>
     </ClerkProvider>
-  )
-}
-
-function SignedOutGate() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <div className="text-center">
-        <h1 className="font-heading text-4xl font-heading">Minimal Market</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          Your productivity workspace
-        </p>
-        <div className="mt-8 flex gap-4 justify-center">
-          <Link to="/sign-in" className={buttonVariants({ variant: "default" }) + " border-2 border-border shadow-shadow"}>
-            Sign In
-          </Link>
-          <Link to="/sign-up" className={buttonVariants({ variant: "outline" }) + " border-2 border-border shadow-shadow"}>
-            Sign Up
-          </Link>
-        </div>
-      </div>
-    </div>
   )
 }
 

@@ -1,9 +1,9 @@
-import { SignIn } from "@clerk/react-router"
+import { SignInForm } from "../components/sign-in-form"
 
 export default function SignInPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <SignIn />
+      <SignInForm />
     </div>
   )
 }
