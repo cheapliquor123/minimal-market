@@ -1,22 +1,14 @@
-import { useState } from "react"
 import { Plus } from "lucide-react"
+import { useMemo } from "react"
 import { PageHeader } from "@/shared/components/layout/page-header"
 import { Button } from "@/shared/components/ui/button"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/components/ui/alert-dialog"
+import { ConfirmDialog } from "@/shared/components/confirm-dialog"
 import { useHabits, useDeleteHabit } from "./hooks/use-habits"
-import { useHabitLogs, useLogHabit, useStreaks, useTodayLogs } from "./hooks/use-habit-logs"
+import { useHabitLogs, useLogHabit, calculateStreaks, getTodayLogs } from "./hooks/use-habit-logs"
 import { HabitList } from "./components/habit-list"
 import { useToday } from "@/stores/date-store"
 import { useHabitDialogStore } from "@/stores/habit-dialog-store"
+import { useDeleteConfirmation } from "@/shared/hooks/use-delete-confirmation"
 
 export function HabitsPage() {
   const today = useToday()
@@ -28,10 +20,10 @@ export function HabitsPage() {
   const deleteHabit = useDeleteHabit()
   const logHabit = useLogHabit()
 
-  const streaks = useStreaks(habits, logs)
-  const todayLogs = useTodayLogs(logs)
+  const streaks = useMemo(() => calculateStreaks(habits, logs), [habits, logs])
+  const todayLogs = useMemo(() => getTodayLogs(logs, today), [logs, today])
 
-  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const { deleteId, confirm, cancel } = useDeleteConfirmation()
 
   function handleToggle(habitId: string, value: number) {
     logHabit.mutate({ habitId, date: today, value })
@@ -56,32 +48,20 @@ export function HabitsPage() {
         isLoading={isLoading}
         onToggle={handleToggle}
         onEdit={openEdit}
-        onDelete={setDeleteId}
+        onDelete={confirm}
         onCreate={() => openCreate()}
       />
 
-      <AlertDialog open={!!deleteId} onOpenChange={(open) => { if (!open) setDeleteId(null) }}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete habit?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. The habit and all its logs will be permanently deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deleteId) deleteHabit.mutate(deleteId)
-                setDeleteId(null)
-              }}
-              className="bg-destructive text-destructive-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={!!deleteId}
+        onCancel={cancel}
+        onConfirm={() => {
+          if (deleteId) deleteHabit.mutate(deleteId)
+          cancel()
+        }}
+        title="Delete habit?"
+        description="This action cannot be undone. The habit and all its logs will be permanently deleted."
+      />
     </div>
   )
 }

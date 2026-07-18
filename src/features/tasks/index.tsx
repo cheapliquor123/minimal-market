@@ -1,22 +1,13 @@
-import { useState } from "react"
 import { Plus } from "lucide-react"
 import { PageHeader } from "@/shared/components/layout/page-header"
 import { Button } from "@/shared/components/ui/button"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/components/ui/alert-dialog"
+import { ConfirmDialog } from "@/shared/components/confirm-dialog"
 import { useTasks, useDeleteTask, useToggleTask } from "./hooks/use-tasks"
 import { TaskList } from "./components/task-list"
 import { TaskFilters } from "./components/task-filters"
 import { useUIStore } from "@/stores/ui-store"
 import { useTaskDialogStore } from "@/stores/task-dialog-store"
+import { useDeleteConfirmation } from "@/shared/hooks/use-delete-confirmation"
 
 export function TasksPage() {
   const filters = useUIStore((s) => s.taskFilters)
@@ -28,7 +19,7 @@ export function TasksPage() {
   const deleteTask = useDeleteTask()
   const toggleTask = useToggleTask()
 
-  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const { deleteId, confirm, cancel } = useDeleteConfirmation()
 
   return (
     <div className="flex flex-col gap-6">
@@ -49,32 +40,20 @@ export function TasksPage() {
         isLoading={isLoading}
         onToggle={(id) => toggleTask.mutate(id)}
         onEdit={openEdit}
-        onDelete={setDeleteId}
+        onDelete={confirm}
         onCreate={() => openCreate()}
       />
 
-      <AlertDialog open={!!deleteId} onOpenChange={(open) => { if (!open) setDeleteId(null) }}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete task?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. The task will be permanently deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deleteId) deleteTask.mutate(deleteId)
-                setDeleteId(null)
-              }}
-              className="bg-destructive text-destructive-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={!!deleteId}
+        onCancel={cancel}
+        onConfirm={() => {
+          if (deleteId) deleteTask.mutate(deleteId)
+          cancel()
+        }}
+        title="Delete task?"
+        description="This action cannot be undone. The task will be permanently deleted."
+      />
     </div>
   )
 }

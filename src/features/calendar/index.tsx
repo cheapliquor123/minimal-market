@@ -1,6 +1,6 @@
-import { useCallback } from "react"
 import { PageHeader } from "@/shared/components/layout/page-header"
 import { useCalendarData } from "./hooks/use-calendar-data"
+import { useCalendarActions } from "./hooks/use-calendar-actions"
 import { CalendarHeader } from "./components/calendar-header"
 import { MonthView } from "./components/month-view"
 import { WeekView } from "./components/week-view"
@@ -8,10 +8,10 @@ import { DayView } from "./components/day-view"
 import { DayDetail } from "./components/day-detail"
 import { useUIStore } from "@/stores/ui-store"
 import { useTaskDialogStore } from "@/stores/task-dialog-store"
+import { activeTasksApi } from "@/features/tasks/api/api-switch"
 import {
   getViewTitle,
   getViewDateRange,
-  navigateDate,
 } from "./utils"
 
 export function CalendarPage() {
@@ -19,26 +19,13 @@ export function CalendarPage() {
   const currentDate = useUIStore((s) => s.calendarDate)
   const selectedDate = useUIStore((s) => s.calendarSelectedDate)
   const setViewMode = useUIStore((s) => s.setCalendarViewMode)
-  const setCurrentDate = useUIStore((s) => s.setCalendarDate)
   const setSelectedDate = useUIStore((s) => s.setCalendarSelectedDate)
 
   const openTaskCreate = useTaskDialogStore((s) => s.openCreate)
+  const { handlePrev, handleNext, handleToday } = useCalendarActions()
 
   const { start, end } = getViewDateRange(currentDate, viewMode)
-  const { dataByDate, isLoading } = useCalendarData(start, end)
-
-  const handlePrev = useCallback(() => {
-    setCurrentDate(navigateDate(currentDate, viewMode, "prev"))
-  }, [currentDate, viewMode, setCurrentDate])
-
-  const handleNext = useCallback(() => {
-    setCurrentDate(navigateDate(currentDate, viewMode, "next"))
-  }, [currentDate, viewMode, setCurrentDate])
-
-  const handleToday = useCallback(() => {
-    setCurrentDate(new Date())
-    setSelectedDate(new Date())
-  }, [setCurrentDate, setSelectedDate])
+  const { dataByDate, isLoading } = useCalendarData(start, end, activeTasksApi)
 
   function handleAddTask(dateStr: string) {
     openTaskCreate({ dueDate: dateStr })

@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react"
 import { Check, Clock, Hash, Play, Square } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Badge } from "@/shared/components/ui/badge"
 import { cn } from "@/shared/lib/utils"
+import { useTimer } from "../hooks/use-timer"
 import type { Habit, HabitLog } from "../types"
 
 interface HabitCardProps {
@@ -44,71 +44,15 @@ function TimerButtons({
   todayLog: HabitLog | undefined
   onToggle: (habitId: string, value: number) => void
 }) {
-  const goalSeconds = (habit.goal ?? 30) * 60
-  const [running, setRunning] = useState(false)
-  const [remaining, setRemaining] = useState(goalSeconds)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const goalMinutes = habit.goal ?? 30
+  const todayLogValue = todayLog?.value ?? 0
 
-  const isCompleted = habit.goal !== null && todayLog !== undefined && todayLog.value >= habit.goal
-
-  const todayLogRef = useRef(todayLog)
-  const onToggleRef = useRef(onToggle)
-  const habitRef = useRef(habit)
-
-  useEffect(() => {
-    todayLogRef.current = todayLog
-    onToggleRef.current = onToggle
-    habitRef.current = habit
+  const { running, remaining, progress, start, stop } = useTimer({
+    goalMinutes,
+    onLog: (minutes) => onToggle(habit.id, todayLogValue + minutes),
   })
 
-  const stopTimer = useCallback((completed: boolean) => {
-    setRunning(false)
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
-    }
-    if (completed) {
-      onToggleRef.current(habitRef.current.id, (todayLogRef.current?.value ?? 0) + (habitRef.current.goal ?? 30))
-    } else {
-      setRemaining((prev) => {
-        const elapsed = goalSeconds - prev
-        const minutes = Math.max(1, Math.round(elapsed / 60))
-        onToggleRef.current(habitRef.current.id, (todayLogRef.current?.value ?? 0) + minutes)
-        return prev
-      })
-    }
-    setRemaining(goalSeconds)
-  }, [goalSeconds])
-
-  useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(() => {
-        setRemaining((prev) => {
-          if (prev <= 1) {
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current)
-              intervalRef.current = null
-            }
-            setRunning(false)
-            onToggleRef.current(habitRef.current.id, (todayLogRef.current?.value ?? 0) + (habitRef.current.goal ?? 30))
-            return goalSeconds
-          }
-          return prev - 1
-        })
-      }, 1000)
-    }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
-      }
-    }
-  }, [running, goalSeconds])
-
-  function handleStart() {
-    setRemaining(goalSeconds)
-    setRunning(true)
-  }
+  const isCompleted = habit.goal !== null && todayLog !== undefined && todayLog.value >= habit.goal
 
   if (isCompleted) {
     return (
@@ -124,7 +68,6 @@ function TimerButtons({
   }
 
   if (running) {
-    const progress = ((goalSeconds - remaining) / goalSeconds) * 100
     return (
       <div className="flex flex-1 flex-col gap-1.5">
         <div className="flex gap-2">
@@ -134,7 +77,7 @@ function TimerButtons({
           </div>
           <Button
             size="sm"
-            onClick={() => stopTimer(false)}
+            onClick={() => stop(false)}
             className="bg-destructive text-destructive-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
           >
             <Square className="size-4" />
@@ -154,11 +97,11 @@ function TimerButtons({
   return (
     <Button
       size="sm"
-      onClick={handleStart}
+      onClick={start}
       className="flex-1 bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
     >
       <Play className="size-4" />
-      Start ({habit.goal ?? 30}m)
+      Start ({goalMinutes}m)
     </Button>
   )
 }

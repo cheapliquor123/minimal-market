@@ -18,18 +18,17 @@ export function SignInForm() {
   const { signIn, errors } = useSignIn()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [googleLoading, setGoogleLoading] = useState(false)
+  const [loading, setLoading] = useState<"idle" | "email" | "google">("idle")
 
   if (isSignedIn) {
     return <Navigate to="/" replace />
   }
 
-  const isProcessing = loading || googleLoading
+  const isProcessing = loading !== "idle"
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
+    setLoading("email")
 
     const result = await signIn.create({
       identifier: email,
@@ -37,7 +36,7 @@ export function SignInForm() {
     })
 
     if (result.error) {
-      setLoading(false)
+      setLoading("idle")
       return
     }
 
@@ -45,11 +44,11 @@ export function SignInForm() {
       await signIn.finalize()
     }
 
-    setLoading(false)
+    setLoading("idle")
   }
 
   async function handleGoogleLogin() {
-    setGoogleLoading(true)
+    setLoading("google")
 
     await signIn.sso({
       strategy: "oauth_google",
@@ -157,7 +156,7 @@ export function SignInForm() {
               disabled={isProcessing}
               className="w-full bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]"
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading === "email" ? "Signing in..." : "Sign In"}
             </Button>
           </form>
         </CardContent>
