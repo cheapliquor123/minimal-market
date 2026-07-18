@@ -35,22 +35,48 @@ function LazyPage({ importFn }: { importFn: () => Promise<{ default: React.Compo
   return withSuspense(Page)
 }
 
+const SignInElement = (
+  <ClerkProvider
+    publishableKey={PUBLISHABLE_KEY}
+    appearance={{ theme: shadcn }}
+    signInUrl="/sign-in"
+    signUpUrl="/sign-up"
+    signInFallbackRedirectUrl="/"
+    signUpFallbackRedirectUrl="/"
+  >
+    <LazyPage importFn={SignInPage} />
+  </ClerkProvider>
+)
+
+const SignUpElement = (
+  <ClerkProvider
+    publishableKey={PUBLISHABLE_KEY}
+    appearance={{ theme: shadcn }}
+    signInUrl="/sign-in"
+    signUpUrl="/sign-up"
+    signInFallbackRedirectUrl="/"
+    signUpFallbackRedirectUrl="/"
+  >
+    <LazyPage importFn={SignUpPage} />
+  </ClerkProvider>
+)
+
 export const router = createBrowserRouter([
   {
+    path: "/sign-in",
+    element: SignInElement,
+  },
+  {
     path: "/sign-in/*",
-    element: (
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ theme: shadcn }}>
-        <LazyPage importFn={SignInPage} />
-      </ClerkProvider>
-    ),
+    element: SignInElement,
+  },
+  {
+    path: "/sign-up",
+    element: SignUpElement,
   },
   {
     path: "/sign-up/*",
-    element: (
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ theme: shadcn }}>
-        <LazyPage importFn={SignUpPage} />
-      </ClerkProvider>
-    ),
+    element: SignUpElement,
   },
   {
     path: "/",

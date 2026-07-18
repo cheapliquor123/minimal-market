@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Navigate } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 import { Show } from "@clerk/react-router"
 import { ClerkProvider } from "@clerk/react-router"
@@ -9,12 +9,12 @@ import { TaskForm } from "@/features/tasks/components/task-form"
 import { HabitForm } from "@/features/habits/components/habit-form"
 import { useCreateTask, useUpdateTask } from "@/features/tasks/hooks/use-tasks"
 import { useCreateHabit, useUpdateHabit } from "@/features/habits/hooks/use-habits"
+import { useEntityFormSubmit } from "@/shared/hooks/use-entity-form-submit"
 import { useTaskDialogStore } from "@/stores/task-dialog-store"
 import { useHabitDialogStore } from "@/stores/habit-dialog-store"
 import { startTodayRefresh, stopTodayRefresh } from "@/stores/date-store"
 import { activeTasksApi } from "@/features/tasks/api/api-switch"
 import { AuthTokenProvider } from "@/shared/components/auth/auth-token-provider"
-import { buttonVariants } from "@/shared/components/ui/button"
 import type { CreateTaskInput } from "@/features/tasks/types"
 import type { CreateHabitInput } from "@/features/habits/types"
 
@@ -26,43 +26,31 @@ if (!PUBLISHABLE_KEY) {
 
 export function RootLayout() {
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ theme: shadcn }}>
+    <ClerkProvider
+      publishableKey={PUBLISHABLE_KEY}
+      appearance={{ theme: shadcn }}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+    >
       <AuthTokenProvider>
         <Show when="signed-in">
           <AuthenticatedLayout />
         </Show>
         <Show when="signed-out">
-          <SignedOutGate />
+          <Navigate to="/sign-in" replace />
         </Show>
       </AuthTokenProvider>
     </ClerkProvider>
   )
 }
 
-function SignedOutGate() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <div className="text-center">
-        <h1 className="font-heading text-4xl font-heading">Minimal Market</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          Your productivity workspace
-        </p>
-        <div className="mt-8 flex gap-4 justify-center">
-          <Link to="/sign-in" className={buttonVariants({ variant: "default" }) + " border-2 border-border shadow-shadow"}>
-            Sign In
-          </Link>
-          <Link to="/sign-up" className={buttonVariants({ variant: "outline" }) + " border-2 border-border shadow-shadow"}>
-            Sign Up
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 function AuthenticatedLayout() {
-  const taskDialog = useTaskDialogStore()
-  const habitDialog = useHabitDialogStore()
+  const editingTask = useTaskDialogStore((s) => s.editingTask)
+  const taskDialogClose = useTaskDialogStore((s) => s.close)
+  const editingHabit = useHabitDialogStore((s) => s.editingHabit)
+  const habitDialogClose = useHabitDialogStore((s) => s.close)
   const createTask = useCreateTask()
   const updateTask = useUpdateTask()
   const createHabit = useCreateHabit()
@@ -75,27 +63,19 @@ function AuthenticatedLayout() {
     return () => stopTodayRefresh()
   }, [qc])
 
-  function handleTaskSubmit(input: CreateTaskInput) {
-    if (taskDialog.editingTask) {
-      updateTask.mutate(
-        { id: taskDialog.editingTask.id, input },
-        { onSuccess: () => taskDialog.close() },
-      )
-    } else {
-      createTask.mutate(input, { onSuccess: () => taskDialog.close() })
-    }
-  }
+  const { handleSubmit: handleTaskSubmit, isPending: taskPending } = useEntityFormSubmit({
+    editing: editingTask,
+    create: createTask,
+    update: updateTask,
+    onSuccess: taskDialogClose,
+  })
 
-  function handleHabitSubmit(input: CreateHabitInput) {
-    if (habitDialog.editingHabit) {
-      updateHabit.mutate(
-        { id: habitDialog.editingHabit.id, input },
-        { onSuccess: () => habitDialog.close() },
-      )
-    } else {
-      createHabit.mutate(input, { onSuccess: () => habitDialog.close() })
-    }
-  }
+  const { handleSubmit: handleHabitSubmit, isPending: habitPending } = useEntityFormSubmit({
+    editing: editingHabit,
+    create: createHabit,
+    update: updateHabit,
+    onSuccess: habitDialogClose,
+  })
 
   return (
     <div className="min-h-screen">
@@ -104,28 +84,61 @@ function AuthenticatedLayout() {
         <Outlet />
       </main>
 
-      <TaskForm
-        open={taskDialog.isOpen}
-        onOpenChange={(open) => {
-          if (open) return
-          taskDialog.close()
-        }}
+      <TaskFormWrapper
         onSubmit={handleTaskSubmit}
-        task={taskDialog.editingTask}
-        defaultDueDate={taskDialog.defaultDueDate ?? undefined}
-        isPending={createTask.isPending || updateTask.isPending}
+        isPending={taskPending}
       />
 
-      <HabitForm
-        open={habitDialog.isOpen}
-        onOpenChange={(open) => {
-          if (open) return
-          habitDialog.close()
-        }}
+      <HabitFormWrapper
         onSubmit={handleHabitSubmit}
-        habit={habitDialog.editingHabit}
-        isPending={createHabit.isPending || updateHabit.isPending}
+        isPending={habitPending}
       />
     </div>
+  )
+}
+
+function TaskFormWrapper({
+  onSubmit,
+  isPending,
+}: {
+  onSubmit: (input: CreateTaskInput) => void
+  isPending: boolean
+}) {
+  const open = useTaskDialogStore((s) => s.isOpen)
+  const editingTask = useTaskDialogStore((s) => s.editingTask)
+  const defaultDueDate = useTaskDialogStore((s) => s.defaultDueDate)
+  const close = useTaskDialogStore((s) => s.close)
+
+  return (
+    <TaskForm
+      open={open}
+      onOpenChange={(isOpen) => { if (!isOpen) close() }}
+      onSubmit={onSubmit}
+      task={editingTask}
+      defaultDueDate={defaultDueDate ?? undefined}
+      isPending={isPending}
+    />
+  )
+}
+
+function HabitFormWrapper({
+  onSubmit,
+  isPending,
+}: {
+  onSubmit: (input: CreateHabitInput) => void
+  isPending: boolean
+}) {
+  const open = useHabitDialogStore((s) => s.isOpen)
+  const editingHabit = useHabitDialogStore((s) => s.editingHabit)
+  const close = useHabitDialogStore((s) => s.close)
+
+  return (
+    <HabitForm
+      open={open}
+      onOpenChange={(isOpen) => { if (!isOpen) close() }}
+      onSubmit={onSubmit}
+      habit={editingHabit}
+      isPending={isPending}
+    />
   )
 }

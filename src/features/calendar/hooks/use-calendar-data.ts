@@ -1,14 +1,18 @@
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { activeTasksApi as tasksApi } from "@/features/tasks/api/api-switch"
 import type { Task } from "@/features/tasks/types"
+import type { TaskFilters } from "@/features/tasks/types"
 import { toDateStr } from "../utils"
 
 export interface CalendarDayData {
   tasks: Task[]
 }
 
-export function useCalendarData(startDate: Date, endDate: Date) {
+export interface TasksApi {
+  list: (filters?: TaskFilters) => Promise<Task[]>
+}
+
+export function useCalendarData(startDate: Date, endDate: Date, tasksApi: TasksApi) {
   const startStr = toDateStr(startDate)
   const endStr = toDateStr(endDate)
 

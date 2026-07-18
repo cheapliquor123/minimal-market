@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import { PageHeader } from "@/shared/components/layout/page-header"
@@ -7,7 +8,8 @@ import { Checkbox } from "@/shared/components/ui/checkbox"
 import { Button } from "@/shared/components/ui/button"
 import { useTasks, useToggleTask } from "@/features/tasks/hooks/use-tasks"
 import { useHabits } from "@/features/habits/hooks/use-habits"
-import { useHabitLogs, useStreaks, useTodayLogs } from "@/features/habits/hooks/use-habit-logs"
+import { useHabitLogs, calculateStreaks, getTodayLogs } from "@/features/habits/hooks/use-habit-logs"
+import { useToday } from "@/stores/date-store"
 import type { Task } from "@/features/tasks/types"
 
 function MiniTaskItem({ task, onToggle }: { task: Task; onToggle: (id: string) => void }) {
@@ -66,17 +68,18 @@ function MiniHabitItem({
 }
 
 export function WorkspacePage() {
+  const today = useToday()
   const { data: activeTasks = [] } = useTasks({ status: "active" })
   const toggleTask = useToggleTask()
   const { data: habits = [] } = useHabits()
   const { data: logs = [] } = useHabitLogs()
 
   const todayTasks = activeTasks.slice(0, 4)
-  const streaks = useStreaks(habits, logs)
-  const todayLogs = useTodayLogs(logs)
+  const streaks = useMemo(() => calculateStreaks(habits, logs), [habits, logs])
+  const todayLogs = useMemo(() => getTodayLogs(logs, today), [logs, today])
   const habitsToShow = habits.slice(0, 4)
 
-  const totalStreaks = Object.values(streaks).reduce((sum, s) => sum + s, 0)
+  const totalStreaks = Object.values(streaks).reduce<number>((sum, s) => sum + s, 0)
 
   return (
     <div className="flex flex-col gap-6">

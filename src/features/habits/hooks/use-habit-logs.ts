@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { habitLogsApi } from "../api/habit-logs"
 import type { Habit, HabitLog } from "../types"
-import { useMemo } from "react"
-import { useToday } from "@/stores/date-store"
 
 const QUERY_KEY = ["habit-logs"]
 
@@ -81,25 +79,20 @@ function calculateStreak(logs: HabitLog[], habitId: string, type: Habit["type"],
   return streak
 }
 
-export function useStreaks(habits: Habit[], logs: HabitLog[]) {
-  return useMemo(() => {
-    const streaks: Record<string, number> = {}
-    for (const habit of habits) {
-      streaks[habit.id] = calculateStreak(logs, habit.id, habit.type, habit.goal)
-    }
-    return streaks
-  }, [habits, logs])
+export function calculateStreaks(habits: Habit[], logs: HabitLog[]): Record<string, number> {
+  const streaks: Record<string, number> = {}
+  for (const habit of habits) {
+    streaks[habit.id] = calculateStreak(logs, habit.id, habit.type, habit.goal)
+  }
+  return streaks
 }
 
-export function useTodayLogs(logs: HabitLog[]) {
-  const today = useToday()
-  return useMemo(() => {
-    const todayLogMap = new Map<string, HabitLog>()
-    for (const log of logs) {
-      if (log.date === today) {
-        todayLogMap.set(log.habitId, log)
-      }
+export function getTodayLogs(logs: HabitLog[], today: string): Map<string, HabitLog> {
+  const todayLogMap = new Map<string, HabitLog>()
+  for (const log of logs) {
+    if (log.date === today) {
+      todayLogMap.set(log.habitId, log)
     }
-    return todayLogMap
-  }, [logs, today])
+  }
+  return todayLogMap
 }
