@@ -1,6 +1,7 @@
 import { CheckCircle } from "lucide-react"
 import { TaskItem } from "./task-item"
 import { EmptyState } from "@/shared/components/empty-state"
+import { ErrorState } from "@/shared/components/error-state"
 import { TaskSkeleton } from "@/shared/components/loading-skeleton"
 import type { Task, TaskFilters } from "../types"
 
@@ -8,6 +9,7 @@ interface TaskListProps {
   tasks: Task[]
   filters?: TaskFilters
   isLoading?: boolean
+  error?: string | null
   onToggle: (id: string) => void
   onEdit: (task: Task) => void
   onDelete: (id: string) => void
@@ -22,6 +24,7 @@ export function TaskList({
   tasks,
   filters,
   isLoading,
+  error,
   onToggle,
   onEdit,
   onDelete,
@@ -35,6 +38,10 @@ export function TaskList({
         <TaskSkeleton />
       </div>
     )
+  }
+
+  if (error) {
+    return <ErrorState message={error} />
   }
 
   if (tasks.length === 0) {

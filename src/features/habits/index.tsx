@@ -15,7 +15,7 @@ export function HabitsPage() {
   const openCreate = useHabitDialogStore((s) => s.openCreate)
   const openEdit = useHabitDialogStore((s) => s.openEdit)
 
-  const { data: habits = [], isLoading } = useHabits()
+  const { data: habits = [], isLoading, error } = useHabits()
   const { data: logs = [] } = useHabitLogs()
   const deleteHabit = useDeleteHabit()
   const logHabit = useLogHabit()
@@ -46,6 +46,7 @@ export function HabitsPage() {
         streaks={streaks}
         todayLogs={todayLogs}
         isLoading={isLoading}
+        error={error?.message}
         onToggle={handleToggle}
         onEdit={openEdit}
         onDelete={confirm}

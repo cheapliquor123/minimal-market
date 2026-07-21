@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { habitLogsApi } from "../api/habit-logs"
+import { handleMutationError } from "@/shared/lib/errors"
 import type { Habit, HabitLog } from "../types"
 
 const QUERY_KEY = ["habit-logs"]
@@ -33,6 +34,10 @@ export function useLogHabit() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to log habit:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -43,6 +48,10 @@ export function useDeleteLog() {
     mutationFn: (id: string) => habitLogsApi.remove(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
+    },
+    onError: (err) => {
+      console.error("Failed to delete log:", err)
+      handleMutationError(err)
     },
   })
 }

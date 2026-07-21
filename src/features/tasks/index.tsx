@@ -15,7 +15,7 @@ export function TasksPage() {
   const openCreate = useTaskDialogStore((s) => s.openCreate)
   const openEdit = useTaskDialogStore((s) => s.openEdit)
 
-  const { data: tasks = [], isLoading } = useTasks(filters)
+  const { data: tasks = [], isLoading, error } = useTasks(filters)
   const deleteTask = useDeleteTask()
   const toggleTask = useToggleTask()
 
@@ -38,6 +38,7 @@ export function TasksPage() {
         tasks={tasks}
         filters={filters}
         isLoading={isLoading}
+        error={error?.message}
         onToggle={(id) => toggleTask.mutate(id)}
         onEdit={openEdit}
         onDelete={confirm}

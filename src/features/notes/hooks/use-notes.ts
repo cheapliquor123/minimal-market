@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { activeNotesApi } from "../api/notes-api-switch"
+import { handleMutationError } from "@/shared/lib/errors"
 import type { CreateNoteInput, UpdateNoteInput } from "../types"
 
 const NOTES_KEY = ["notes"]
@@ -18,6 +19,10 @@ export function useCreateNote() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: NOTES_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to create note:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -29,6 +34,10 @@ export function useUpdateNote() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: NOTES_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to update note:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -38,6 +47,10 @@ export function useDeleteNote() {
     mutationFn: (id: string) => activeNotesApi.remove(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: NOTES_KEY })
+    },
+    onError: (err) => {
+      console.error("Failed to delete note:", err)
+      handleMutationError(err)
     },
   })
 }

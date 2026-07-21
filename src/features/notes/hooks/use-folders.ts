@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { activeFoldersApi } from "../api/folders-api-switch"
+import { handleMutationError } from "@/shared/lib/errors"
 import type { CreateFolderInput, UpdateFolderInput } from "../types"
 
 const FOLDERS_KEY = ["folders"]
@@ -18,6 +19,10 @@ export function useCreateFolder() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: FOLDERS_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to create folder:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -29,6 +34,10 @@ export function useUpdateFolder() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: FOLDERS_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to update folder:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -39,6 +48,10 @@ export function useDeleteFolder() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: FOLDERS_KEY })
       qc.invalidateQueries({ queryKey: ["notes"] })
+    },
+    onError: (err) => {
+      console.error("Failed to delete folder:", err)
+      handleMutationError(err)
     },
   })
 }

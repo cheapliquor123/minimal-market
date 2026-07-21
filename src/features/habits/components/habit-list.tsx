@@ -1,6 +1,7 @@
 import { CheckSquare } from "lucide-react"
 import { HabitCard } from "./habit-card"
 import { EmptyState } from "@/shared/components/empty-state"
+import { ErrorState } from "@/shared/components/error-state"
 import { HabitSkeleton } from "@/shared/components/loading-skeleton"
 import type { Habit, HabitLog } from "../types"
 
@@ -9,6 +10,7 @@ interface HabitListProps {
   streaks: Record<string, number>
   todayLogs: Map<string, HabitLog>
   isLoading?: boolean
+  error?: string | null
   onToggle: (habitId: string, value: number) => void
   onEdit: (habit: Habit) => void
   onDelete: (habitId: string) => void
@@ -20,6 +22,7 @@ export function HabitList({
   streaks,
   todayLogs,
   isLoading,
+  error,
   onToggle,
   onEdit,
   onDelete,
@@ -33,6 +36,10 @@ export function HabitList({
         <HabitSkeleton />
       </div>
     )
+  }
+
+  if (error) {
+    return <ErrorState message={error} />
   }
 
   if (habits.length === 0) {

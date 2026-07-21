@@ -60,6 +60,18 @@ describe("TaskList", () => {
       )
       expect(screen.getByText("No matching tasks")).toBeInTheDocument()
     })
+
+    it("shows error state when error is provided", () => {
+      renderWithProviders(
+        <TaskList
+          tasks={[]}
+          error="Failed to load tasks"
+          {...defaultProps}
+        />,
+      )
+      expect(screen.getByText("Something went wrong")).toBeInTheDocument()
+      expect(screen.getByText("Failed to load tasks")).toBeInTheDocument()
+    })
   })
 
   describe("task list rendering", () => {
