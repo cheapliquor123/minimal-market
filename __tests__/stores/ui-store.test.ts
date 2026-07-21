@@ -2,7 +2,7 @@ import { useUIStore } from "@/stores/ui-store"
 
 beforeEach(() => {
   useUIStore.setState({
-    taskFilters: { status: "all", priority: "all" },
+    taskFilters: { status: "active", priority: "all" },
     calendarViewMode: "month",
     calendarDate: new Date(2025, 5, 15),
     calendarSelectedDate: new Date(2025, 5, 15),
@@ -13,7 +13,7 @@ describe("ui-store", () => {
   describe("taskFilters", () => {
     it("has correct default state", () => {
       const state = useUIStore.getState()
-      expect(state.taskFilters).toEqual({ status: "all", priority: "all" })
+      expect(state.taskFilters).toEqual({ status: "active", priority: "all" })
     })
 
     it("setTaskFilters updates filters", () => {

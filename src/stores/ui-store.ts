@@ -15,7 +15,7 @@ interface UIStore {
 }
 
 export const useUIStore = create<UIStore>((set) => ({
-  taskFilters: { status: "all", priority: "all" },
+  taskFilters: { status: "active", priority: "all" },
   setTaskFilters: (filters) => set({ taskFilters: filters }),
 
   calendarViewMode: "month",

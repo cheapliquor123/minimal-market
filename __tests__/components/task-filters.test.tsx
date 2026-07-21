@@ -4,7 +4,7 @@ import { TaskFilters } from "@/features/tasks/components/task-filters"
 import { renderWithProviders } from "../test-utils"
 import type { TaskFilters as TaskFiltersType } from "@/features/tasks/types"
 
-const defaultFilters: TaskFiltersType = { status: "all", priority: "all" }
+const defaultFilters: TaskFiltersType = { status: "active", priority: "all" }
 
 describe("TaskFilters", () => {
   it("renders status filter buttons", () => {
