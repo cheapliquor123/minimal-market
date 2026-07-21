@@ -35,6 +35,8 @@ export function NotesPage() {
     currentFolder,
     notesLoading,
     foldersLoading,
+    notesError,
+    foldersError,
 
     createNote,
     updateNote,
@@ -65,6 +67,7 @@ export function NotesPage() {
         notes={notes}
         folders={currentFolderId ? [] : allFolders}
         isLoading={notesLoading || foldersLoading}
+        error={notesError || foldersError}
         currentFolderId={currentFolderId}
         search={search}
         onSearchChange={setSearch}

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { activeTasksApi as tasksApi } from "../api/api-switch"
+import { handleMutationError } from "@/shared/lib/errors"
 import type { Task, TaskFilters, CreateTaskInput, UpdateTaskInput } from "../types"
 
 const QUERY_KEY = ["tasks"]
@@ -27,6 +28,10 @@ export function useCreateTask() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to create task:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -39,6 +44,10 @@ export function useUpdateTask() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
+    onError: (err) => {
+      console.error("Failed to update task:", err)
+      handleMutationError(err)
+    },
   })
 }
 
@@ -49,6 +58,10 @@ export function useDeleteTask() {
     mutationFn: (id: string) => tasksApi.remove(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
+    },
+    onError: (err) => {
+      console.error("Failed to delete task:", err)
+      handleMutationError(err)
     },
   })
 }
@@ -75,12 +88,14 @@ export function useToggleTask() {
 
       return { prev }
     },
-    onError: (_err, _id, context) => {
+    onError: (err, _id, context) => {
       if (context?.prev) {
         for (const [key, data] of context.prev) {
           qc.setQueryData(key, data)
         }
       }
+      console.error("Failed to toggle task:", err)
+      handleMutationError(err)
     },
     onSettled: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEY })

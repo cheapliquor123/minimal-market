@@ -18,11 +18,11 @@ export function useNotesPage() {
   const filters = useNotesFilters()
   const dialogs = useNotesDialogs()
 
-  const { data: allNotes = [], isLoading: notesLoading } = useNotes(
+  const { data: allNotes = [], isLoading: notesLoading, error: notesError } = useNotes(
     dialogs.currentFolderId,
     filters.debouncedSearch || undefined,
   )
-  const { data: allFolders = [], isLoading: foldersLoading } = useFolders()
+  const { data: allFolders = [], isLoading: foldersLoading, error: foldersError } = useFolders()
 
   const createNote = useCreateNote()
   const updateNote = useUpdateNote()
@@ -81,6 +81,8 @@ export function useNotesPage() {
     currentFolder,
     notesLoading,
     foldersLoading,
+    notesError: notesError?.message ?? null,
+    foldersError: foldersError?.message ?? null,
 
     createNote,
     updateNote,

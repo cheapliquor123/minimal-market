@@ -16,7 +16,7 @@ export function useCalendarData(startDate: Date, endDate: Date, tasksApi: TasksA
   const startStr = toDateStr(startDate)
   const endStr = toDateStr(endDate)
 
-  const { data: tasks = [], isLoading } = useQuery({
+  const { data: tasks = [], isLoading, error } = useQuery({
     queryKey: ["tasks", startStr, endStr],
     queryFn: () => tasksApi.list({ startDate: startStr, endDate: endStr }),
   })
@@ -35,5 +35,5 @@ export function useCalendarData(startDate: Date, endDate: Date, tasksApi: TasksA
     return map
   }, [tasks, startStr, endStr])
 
-  return { dataByDate, isLoading }
+  return { dataByDate, isLoading, error }
 }

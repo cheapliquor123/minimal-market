@@ -1,4 +1,5 @@
 import { PageHeader } from "@/shared/components/layout/page-header"
+import { ErrorState } from "@/shared/components/error-state"
 import { useCalendarData } from "./hooks/use-calendar-data"
 import { useCalendarActions } from "./hooks/use-calendar-actions"
 import { CalendarHeader } from "./components/calendar-header"
@@ -25,7 +26,7 @@ export function CalendarPage() {
   const { handlePrev, handleNext, handleToday } = useCalendarActions()
 
   const { start, end } = getViewDateRange(currentDate, viewMode)
-  const { dataByDate, isLoading } = useCalendarData(start, end, activeTasksApi)
+  const { dataByDate, isLoading, error: calendarError } = useCalendarData(start, end, activeTasksApi)
 
   function handleAddTask(dateStr: string) {
     openTaskCreate({ dueDate: dateStr })
@@ -51,6 +52,8 @@ export function CalendarPage() {
         <div className="flex h-64 items-center justify-center">
           <div className="size-8 animate-spin rounded-base border-4 border-border border-t-main" />
         </div>
+      ) : calendarError ? (
+        <ErrorState message={calendarError.message} />
       ) : (
         <div className="flex flex-col gap-4">
           {viewMode === "month" && (

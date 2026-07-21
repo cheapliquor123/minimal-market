@@ -69,10 +69,10 @@ function MiniHabitItem({
 
 export function WorkspacePage() {
   const today = useToday()
-  const { data: activeTasks = [] } = useTasks({ status: "active" })
+  const { data: activeTasks = [], error: tasksError } = useTasks({ status: "active" })
   const toggleTask = useToggleTask()
-  const { data: habits = [] } = useHabits()
-  const { data: logs = [] } = useHabitLogs()
+  const { data: habits = [], error: habitsError } = useHabits()
+  const { data: logs = [], error: logsError } = useHabitLogs()
 
   const todayTasks = activeTasks.slice(0, 4)
   const streaks = useMemo(() => calculateStreaks(habits, logs), [habits, logs])
@@ -100,7 +100,9 @@ export function WorkspacePage() {
             </Link>
           </CardHeader>
           <CardContent>
-            {todayTasks.length > 0 ? (
+            {tasksError ? (
+              <p className="text-sm text-destructive">Failed to load tasks.</p>
+            ) : todayTasks.length > 0 ? (
               <div className="flex flex-col gap-0.5">
                 {todayTasks.map((task) => (
                   <MiniTaskItem
@@ -129,7 +131,9 @@ export function WorkspacePage() {
             </Link>
           </CardHeader>
           <CardContent>
-            {habitsToShow.length > 0 ? (
+            {habitsError ? (
+              <p className="text-sm text-destructive">Failed to load habits.</p>
+            ) : habitsToShow.length > 0 ? (
               <div className="flex flex-col gap-0.5">
                 {habitsToShow.map((habit) => (
                   <MiniHabitItem
@@ -160,20 +164,24 @@ export function WorkspacePage() {
             </Link>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Active tasks</span>
-                <span className="font-heading">{activeTasks.length}</span>
+            {(tasksError || habitsError || logsError) ? (
+              <p className="text-sm text-destructive">Failed to load stats.</p>
+            ) : (
+              <div className="flex flex-col gap-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Active tasks</span>
+                  <span className="font-heading">{activeTasks.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Habits today</span>
+                  <span className="font-heading">{todayLogs.size}/{habits.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total streak days</span>
+                  <span className="font-heading">{totalStreaks}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Habits today</span>
-                <span className="font-heading">{todayLogs.size}/{habits.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Total streak days</span>
-                <span className="font-heading">{totalStreaks}</span>
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>

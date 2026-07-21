@@ -2,6 +2,7 @@ import { FileText, FolderPlus, Plus } from "lucide-react"
 import { Input } from "@/shared/components/ui/input"
 import { Button } from "@/shared/components/ui/button"
 import { EmptyState } from "@/shared/components/empty-state"
+import { ErrorState } from "@/shared/components/error-state"
 import { NoteSkeleton, FolderSkeleton } from "@/shared/components/loading-skeleton"
 import { cn } from "@/shared/lib/utils"
 import { NOTE_COLORS } from "@/shared/lib/note-colors"
@@ -88,6 +89,7 @@ interface NoteGridProps {
   notes: Note[]
   folders: Folder[]
   isLoading?: boolean
+  error?: string | null
   currentFolderId: string | null
   search: string
   onSearchChange: (search: string) => void
@@ -105,6 +107,7 @@ export function NoteGrid({
   notes,
   folders,
   isLoading,
+  error,
   currentFolderId,
   search,
   onSearchChange,
@@ -130,6 +133,23 @@ export function NoteGrid({
             <NoteSkeleton key={`note-skeleton-${i}`} />
           ))}
         </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col gap-4">
+        <NoteGridToolbar
+          search={search}
+          onSearchChange={onSearchChange}
+          colorFilter={colorFilter}
+          onColorFilterChange={onColorFilterChange}
+          currentFolderId={currentFolderId}
+          onCreateFolder={onCreateFolder}
+          onCreateNote={onCreateNote}
+        />
+        <ErrorState message={error} />
       </div>
     )
   }

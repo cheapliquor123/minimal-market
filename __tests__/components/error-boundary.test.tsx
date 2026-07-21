@@ -106,4 +106,14 @@ describe("ErrorBoundary", () => {
 
     unmount()
   })
+
+  it("calls console.error when an error is caught", () => {
+    renderWithProviders(
+      <ErrorBoundary>
+        <ThrowingComponent shouldThrow={true} />
+      </ErrorBoundary>,
+    )
+
+    expect(console.error).toHaveBeenCalled()
+  })
 })
