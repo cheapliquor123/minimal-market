@@ -45,18 +45,27 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
   const priority = priorityConfig[task.priority]
   const due = task.dueDate ? formatDueDate(task.dueDate) : null
 
+  function handleClick() {
+    const selection = window.getSelection()
+    if (selection && selection.toString().length > 0) return
+    onEdit(task)
+  }
+
   return (
     <div
+      onClick={handleClick}
       className={cn(
-        "group flex items-center gap-3 rounded-base border-2 border-border bg-secondary-background p-3 shadow-shadow transition-all",
+        "group flex items-center gap-3 rounded-base border-2 border-border bg-secondary-background p-3 shadow-shadow transition-all select-text",
         "hover:-translate-y-[1px] hover:shadow-none",
         task.completed && "opacity-60",
       )}
     >
-      <Checkbox
-        checked={task.completed}
-        onCheckedChange={() => onToggle(task.id)}
-      />
+      <div onClick={(e) => e.stopPropagation()}>
+        <Checkbox
+          checked={task.completed}
+          onCheckedChange={() => onToggle(task.id)}
+        />
+      </div>
 
       <div className="flex flex-1 flex-col gap-1 min-w-0">
         <span
@@ -99,31 +108,33 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
         {priority.label}
       </Badge>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-            aria-label="Task actions"
-          >
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => onEdit(task)}>
-            <Pencil className="size-4" />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onDelete(task.id)}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash2 className="size-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div onClick={(e) => e.stopPropagation()}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="Task actions"
+            >
+              <MoreHorizontal className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEdit(task)}>
+              <Pencil className="size-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onDelete(task.id)}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="size-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   )
 }
