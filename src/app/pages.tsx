@@ -15,3 +15,6 @@ export const CalendarPage = lazy(() =>
 export const NotesPage = lazy(() =>
   import("@/features/notes").then((m) => ({ default: m.NotesPage })),
 )
+export const SettingsPage = lazy(() =>
+  import("@/features/settings").then((m) => ({ default: m.SettingsPage })),
+)
