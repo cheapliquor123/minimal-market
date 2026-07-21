@@ -1,5 +1,6 @@
 import { useUser, useAuth } from "@clerk/react-router"
-import { LogOut } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
+import { Link } from "react-router-dom"
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/avatar"
 import {
   DropdownMenu,
@@ -21,7 +22,7 @@ export function UserDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex size-8 items-center justify-center rounded-base border-2 border-border shadow-shadow transition-all hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px] focus:outline-none">
+      <DropdownMenuTrigger className="flex size-8 items-center justify-center rounded-full border-2 border-border shadow-shadow transition-all hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px] focus:outline-none">
         <Avatar className="size-7">
           <AvatarImage src={user.imageUrl} alt={name} />
           <AvatarFallback>{initials}</AvatarFallback>
@@ -39,6 +40,13 @@ export function UserDropdown() {
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/settings">
+            <Settings className="size-4" />
+            Settings
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           onClick={() => signOut()}

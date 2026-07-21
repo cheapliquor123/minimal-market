@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router-dom"
 import { ClerkProvider } from "@clerk/react-router"
 import { shadcn } from "@clerk/ui/themes"
 import { RootLayout } from "./root-layout"
-import { WorkspacePage, TasksPage, HabitsPage, CalendarPage, NotesPage } from "./pages"
+import { WorkspacePage, TasksPage, HabitsPage, CalendarPage, NotesPage, SettingsPage } from "./pages"
 import { ErrorBoundary } from "@/shared/components/error-boundary"
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -91,6 +91,7 @@ export const router = createBrowserRouter([
       { path: "habits", element: withSuspense(HabitsPage) },
       { path: "calendar", element: withSuspense(CalendarPage) },
       { path: "notes", element: withSuspense(NotesPage) },
+      { path: "settings/*", element: withSuspense(SettingsPage) },
     ],
   },
 ])
