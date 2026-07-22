@@ -1,26 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback } from "react"
 
-interface MutationLike {
-  mutate: (vars: any, options?: { onSuccess?: () => void }) => void
+interface MutationLike<TInput> {
+  mutate: (vars: TInput, options?: { onSuccess?: () => void }) => void
   isPending: boolean
 }
 
-interface UseEntityFormSubmitOptions {
+interface UpdateMutationLike<TInput> {
+  mutate: (vars: { id: string; input: TInput }, options?: { onSuccess?: () => void }) => void
+  isPending: boolean
+}
+
+interface UseEntityFormSubmitOptions<TInput> {
   editing: { id: string } | null | undefined
-  create: MutationLike
-  update: MutationLike
+  create: MutationLike<TInput>
+  update: UpdateMutationLike<TInput>
   onSuccess: () => void
 }
 
-export function useEntityFormSubmit({
+export function useEntityFormSubmit<TInput>({
   editing,
   create,
   update,
   onSuccess,
-}: UseEntityFormSubmitOptions) {
+}: UseEntityFormSubmitOptions<TInput>) {
   const handleSubmit = useCallback(
-    (input: any) => {
+    (input: TInput) => {
       if (editing) {
         update.mutate(
           { id: editing.id, input },

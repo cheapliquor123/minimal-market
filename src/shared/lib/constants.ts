@@ -1,4 +1,4 @@
-export const APP_NAME = "Minimal Market"
+export const APP_NAME = "Miniflow"
 
 export const ROUTES = {
   HOME: "/",

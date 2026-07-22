@@ -1,12 +1,13 @@
+import { vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useTimer } from "@/features/habits/hooks/use-timer"
 
 beforeEach(() => {
-  jest.useFakeTimers()
+  vi.useFakeTimers()
 })
 
 afterEach(() => {
-  jest.useRealTimers()
+  vi.useRealTimers()
 })
 
 describe("useTimer", () => {
@@ -15,7 +16,7 @@ describe("useTimer", () => {
 
   it("initializes with correct default state", () => {
     const { result } = renderHook(() =>
-      useTimer({ goalMinutes, onLog: jest.fn() }),
+      useTimer({ goalMinutes, onLog: vi.fn() }),
     )
 
     expect(result.current.running).toBe(false)
@@ -27,7 +28,7 @@ describe("useTimer", () => {
   describe("start", () => {
     it("sets running to true and resets remaining", () => {
       const { result } = renderHook(() =>
-        useTimer({ goalMinutes, onLog: jest.fn() }),
+        useTimer({ goalMinutes, onLog: vi.fn() }),
       )
 
       act(() => {
@@ -40,7 +41,7 @@ describe("useTimer", () => {
 
     it("counts down each second", () => {
       const { result } = renderHook(() =>
-        useTimer({ goalMinutes, onLog: jest.fn() }),
+        useTimer({ goalMinutes, onLog: vi.fn() }),
       )
 
       act(() => {
@@ -48,7 +49,7 @@ describe("useTimer", () => {
       })
 
       act(() => {
-        jest.advanceTimersByTime(3000)
+        vi.advanceTimersByTime(3000)
       })
 
       expect(result.current.remaining).toBe(goalSeconds - 3)
@@ -57,7 +58,7 @@ describe("useTimer", () => {
 
     it("calculates progress correctly", () => {
       const { result } = renderHook(() =>
-        useTimer({ goalMinutes: 1, onLog: jest.fn() }),
+        useTimer({ goalMinutes: 1, onLog: vi.fn() }),
       )
 
       act(() => {
@@ -65,7 +66,7 @@ describe("useTimer", () => {
       })
 
       act(() => {
-        jest.advanceTimersByTime(30000)
+        vi.advanceTimersByTime(30000)
       })
 
       expect(result.current.progress).toBeCloseTo(50, 0)
@@ -74,7 +75,7 @@ describe("useTimer", () => {
 
   describe("auto-completion", () => {
     it("calls onLog with goalMinutes when timer reaches zero", () => {
-      const onLog = jest.fn()
+      const onLog = vi.fn()
       const { result } = renderHook(() =>
         useTimer({ goalMinutes: 1, onLog }),
       )
@@ -84,7 +85,7 @@ describe("useTimer", () => {
       })
 
       act(() => {
-        jest.advanceTimersByTime(60_000)
+        vi.advanceTimersByTime(60_000)
       })
 
       expect(onLog).toHaveBeenCalledWith(1)
@@ -95,7 +96,7 @@ describe("useTimer", () => {
 
   describe("stop", () => {
     it("stop(true) logs full goal minutes", () => {
-      const onLog = jest.fn()
+      const onLog = vi.fn()
       const { result } = renderHook(() =>
         useTimer({ goalMinutes: 5, onLog }),
       )
@@ -105,7 +106,7 @@ describe("useTimer", () => {
       })
 
       act(() => {
-        jest.advanceTimersByTime(10_000)
+        vi.advanceTimersByTime(10_000)
       })
 
       act(() => {
@@ -118,7 +119,7 @@ describe("useTimer", () => {
     })
 
     it("stop(false) logs partial minutes", () => {
-      const onLog = jest.fn()
+      const onLog = vi.fn()
       const { result } = renderHook(() =>
         useTimer({ goalMinutes: 10, onLog }),
       )
@@ -128,7 +129,7 @@ describe("useTimer", () => {
       })
 
       act(() => {
-        jest.advanceTimersByTime(120_000)
+        vi.advanceTimersByTime(120_000)
       })
 
       act(() => {
@@ -140,7 +141,7 @@ describe("useTimer", () => {
     })
 
     it("stop(false) logs at least 1 minute", () => {
-      const onLog = jest.fn()
+      const onLog = vi.fn()
       const { result } = renderHook(() =>
         useTimer({ goalMinutes: 10, onLog }),
       )
@@ -150,7 +151,7 @@ describe("useTimer", () => {
       })
 
       act(() => {
-        jest.advanceTimersByTime(5000)
+        vi.advanceTimersByTime(5000)
       })
 
       act(() => {
@@ -163,7 +164,7 @@ describe("useTimer", () => {
 
   describe("cleanup", () => {
     it("clears interval on unmount", () => {
-      const onLog = jest.fn()
+      const onLog = vi.fn()
       const { result, unmount } = renderHook(() =>
         useTimer({ goalMinutes: 1, onLog }),
       )
@@ -175,7 +176,7 @@ describe("useTimer", () => {
       unmount()
 
       act(() => {
-        jest.advanceTimersByTime(60_000)
+        vi.advanceTimersByTime(60_000)
       })
 
       expect(onLog).not.toHaveBeenCalled()

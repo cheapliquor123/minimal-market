@@ -1,7 +1,7 @@
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
-import { Input } from "@/shared/components/ui/input"
+import { Input, Textarea } from "@/shared/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -65,13 +65,13 @@ function NoteFormInner({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="note-content" className="text-xs font-heading">Content</label>
-          <textarea
+          <Textarea
             id="note-content"
             placeholder="Write something..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={5}
-            className="flex w-full rounded-base border-2 border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-main disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+            className="resize-none"
           />
         </div>
 
@@ -128,22 +128,19 @@ function NoteFormInner({
 }
 
 export function NoteForm({ open, onOpenChange, onSubmit, onDelete, note, isPending }: NoteFormProps) {
-  const formKey = useMemo(
-    () => `${note?.id ?? "new"}-${open}`,
-    [note?.id, open],
-  )
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
-        <NoteFormInner
-          key={formKey}
-          note={note}
-          onSubmit={onSubmit}
-          onDelete={onDelete}
-          onOpenChange={onOpenChange}
-          isPending={isPending}
-        />
+        {open && (
+          <NoteFormInner
+            key={note?.id ?? "new"}
+            note={note}
+            onSubmit={onSubmit}
+            onDelete={onDelete}
+            onOpenChange={onOpenChange}
+            isPending={isPending}
+          />
+        )}
       </DialogContent>
     </Dialog>
   )

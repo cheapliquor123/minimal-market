@@ -1,22 +1,23 @@
+import { vi } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { type ReactNode } from "react"
 import { useTasks, useCreateTask, useUpdateTask, useDeleteTask, useToggleTask } from "@/features/tasks/hooks/use-tasks"
 import { createMockTask } from "../test-utils"
 
-jest.mock("@/features/tasks/api/api-switch", () => ({
+vi.mock("@/features/tasks/api/api-switch", () => ({
   activeTasksApi: {
-    list: jest.fn(),
-    get: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    toggle: jest.fn(),
-    remove: jest.fn(),
+    list: vi.fn(),
+    get: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    toggle: vi.fn(),
+    remove: vi.fn(),
   },
 }))
 
 import { activeTasksApi } from "@/features/tasks/api/api-switch"
-const mockApi = jest.mocked(activeTasksApi)
+const mockApi = vi.mocked(activeTasksApi)
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -39,7 +40,7 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("useTasks", () => {

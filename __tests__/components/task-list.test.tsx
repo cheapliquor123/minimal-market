@@ -1,16 +1,17 @@
+import { vi } from "vitest"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { TaskList } from "@/features/tasks/components/task-list"
 import { createMockTask, renderWithProviders } from "../test-utils"
 
 const defaultProps = {
-  onToggle: jest.fn(),
-  onEdit: jest.fn(),
-  onDelete: jest.fn(),
+  onToggle: vi.fn(),
+  onEdit: vi.fn(),
+  onDelete: vi.fn(),
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("TaskList", () => {
@@ -32,7 +33,7 @@ describe("TaskList", () => {
     })
 
     it("shows create button when onCreate is provided", () => {
-      const onCreate = jest.fn()
+      const onCreate = vi.fn()
       renderWithProviders(
         <TaskList tasks={[]} onCreate={onCreate} {...defaultProps} />,
       )
@@ -41,7 +42,7 @@ describe("TaskList", () => {
 
     it("calls onCreate when create button is clicked", async () => {
       const user = userEvent.setup()
-      const onCreate = jest.fn()
+      const onCreate = vi.fn()
       renderWithProviders(
         <TaskList tasks={[]} onCreate={onCreate} {...defaultProps} />,
       )

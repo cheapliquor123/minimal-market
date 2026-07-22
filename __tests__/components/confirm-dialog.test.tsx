@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { ConfirmDialog } from "@/shared/components/confirm-dialog"
@@ -5,14 +6,14 @@ import { renderWithProviders } from "../test-utils"
 
 const defaultProps = {
   open: true,
-  onConfirm: jest.fn(),
-  onCancel: jest.fn(),
+  onConfirm: vi.fn(),
+  onCancel: vi.fn(),
   title: "Delete item?",
   description: "This action cannot be undone.",
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("ConfirmDialog", () => {
@@ -42,7 +43,7 @@ describe("ConfirmDialog", () => {
   describe("interactions", () => {
     it("calls onConfirm when confirm button is clicked", async () => {
       const user = userEvent.setup()
-      const onConfirm = jest.fn()
+      const onConfirm = vi.fn()
       renderWithProviders(
         <ConfirmDialog {...defaultProps} onConfirm={onConfirm} />,
       )
@@ -53,7 +54,7 @@ describe("ConfirmDialog", () => {
 
     it("calls onCancel when cancel button is clicked", async () => {
       const user = userEvent.setup()
-      const onCancel = jest.fn()
+      const onCancel = vi.fn()
       renderWithProviders(
         <ConfirmDialog {...defaultProps} onCancel={onCancel} />,
       )

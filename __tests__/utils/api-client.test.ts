@@ -1,6 +1,7 @@
+import { vi } from "vitest"
 import { api, setAuthTokenGetter } from "@/shared/lib/api"
 
-const mockFetch = jest.fn()
+const mockFetch = vi.fn()
 global.fetch = mockFetch
 
 function jsonResponse(data: unknown, status = 200) {
@@ -9,7 +10,7 @@ function jsonResponse(data: unknown, status = 200) {
     status,
     statusText: status === 200 ? "OK" : "Error",
     headers: new Headers({ "content-type": "application/json" }),
-    json: jest.fn().mockResolvedValue({ data }),
+    json: vi.fn().mockResolvedValue({ data }),
   }
 }
 
@@ -19,7 +20,7 @@ function errorResponse(status: number, body?: Record<string, unknown>) {
     status,
     statusText: "Error",
     headers: new Headers({ "content-type": "application/json" }),
-    json: jest.fn().mockResolvedValue(body ?? { error: "Something went wrong" }),
+    json: vi.fn().mockResolvedValue(body ?? { error: "Something went wrong" }),
   }
 }
 
@@ -29,7 +30,7 @@ function noContentResponse() {
     status: 204,
     statusText: "No Content",
     headers: new Headers(),
-    json: jest.fn(),
+    json: vi.fn(),
   }
 }
 
@@ -151,7 +152,7 @@ describe("error handling", () => {
       status: 500,
       statusText: "Internal Server Error",
       headers: new Headers(),
-      json: jest.fn().mockRejectedValue(new Error("Not JSON")),
+      json: vi.fn().mockRejectedValue(new Error("Not JSON")),
     }
     mockFetch.mockResolvedValue(response)
     await expect(api.get("/api/error")).rejects.toMatchObject({

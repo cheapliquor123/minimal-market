@@ -1,9 +1,10 @@
+import { vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useEntityFormSubmit } from "@/shared/hooks/use-entity-form-submit"
 
 function createMockMutation() {
   return {
-    mutate: jest.fn(),
+    mutate: vi.fn(),
     isPending: false,
   }
 }
@@ -13,7 +14,7 @@ describe("useEntityFormSubmit", () => {
     it("calls create.mutate with input", () => {
       const create = createMockMutation()
       const update = createMockMutation()
-      const onSuccess = jest.fn()
+      const onSuccess = vi.fn()
 
       const { result } = renderHook(() =>
         useEntityFormSubmit({
@@ -40,7 +41,7 @@ describe("useEntityFormSubmit", () => {
     it("calls update.mutate with id and input", () => {
       const create = createMockMutation()
       const update = createMockMutation()
-      const onSuccess = jest.fn()
+      const onSuccess = vi.fn()
 
       const { result } = renderHook(() =>
         useEntityFormSubmit({
@@ -73,7 +74,7 @@ describe("useEntityFormSubmit", () => {
           editing: null,
           create,
           update,
-          onSuccess: jest.fn(),
+          onSuccess: vi.fn(),
         }),
       )
 
@@ -81,7 +82,7 @@ describe("useEntityFormSubmit", () => {
     })
 
     it("returns true when create is pending", () => {
-      const create = { mutate: jest.fn(), isPending: true }
+      const create = { mutate: vi.fn(), isPending: true }
       const update = createMockMutation()
 
       const { result } = renderHook(() =>
@@ -89,7 +90,7 @@ describe("useEntityFormSubmit", () => {
           editing: null,
           create,
           update,
-          onSuccess: jest.fn(),
+          onSuccess: vi.fn(),
         }),
       )
 
@@ -98,14 +99,14 @@ describe("useEntityFormSubmit", () => {
 
     it("returns true when update is pending", () => {
       const create = createMockMutation()
-      const update = { mutate: jest.fn(), isPending: true }
+      const update = { mutate: vi.fn(), isPending: true }
 
       const { result } = renderHook(() =>
         useEntityFormSubmit({
           editing: { id: "item-1" },
           create,
           update,
-          onSuccess: jest.fn(),
+          onSuccess: vi.fn(),
         }),
       )
 

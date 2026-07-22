@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { AlertCircle } from "lucide-react"
@@ -23,7 +24,7 @@ describe("EmptyState", () => {
   })
 
   it("renders action button when action is provided", () => {
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     renderWithProviders(
       <EmptyState
         icon={AlertCircle}
@@ -39,7 +40,7 @@ describe("EmptyState", () => {
 
   it("calls action onClick when button is clicked", async () => {
     const user = userEvent.setup()
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     renderWithProviders(
       <EmptyState
         icon={AlertCircle}

@@ -7,13 +7,13 @@ import { shadcn } from "@clerk/ui/themes"
 import { Navbar } from "@/shared/components/layout/navbar"
 import { TaskForm } from "@/features/tasks/components/task-form"
 import { HabitForm } from "@/features/habits/components/habit-form"
-import { useCreateTask, useUpdateTask } from "@/features/tasks/hooks/use-tasks"
+import { useCreateTask, useUpdateTask, useCarryForward } from "@/features/tasks/hooks/use-tasks"
 import { useCreateHabit, useUpdateHabit } from "@/features/habits/hooks/use-habits"
 import { useEntityFormSubmit } from "@/shared/hooks/use-entity-form-submit"
+import { useKeyboardShortcuts } from "@/shared/hooks/use-keyboard-shortcuts"
 import { useTaskDialogStore } from "@/stores/task-dialog-store"
 import { useHabitDialogStore } from "@/stores/habit-dialog-store"
 import { startTodayRefresh, stopTodayRefresh } from "@/stores/date-store"
-import { activeTasksApi } from "@/features/tasks/api/api-switch"
 import { AuthTokenProvider } from "@/shared/components/auth/auth-token-provider"
 import type { CreateTaskInput } from "@/features/tasks/types"
 import type { CreateHabitInput } from "@/features/habits/types"
@@ -47,6 +47,7 @@ export function RootLayout() {
 }
 
 function AuthenticatedLayout() {
+  useKeyboardShortcuts()
   const editingTask = useTaskDialogStore((s) => s.editingTask)
   const taskDialogClose = useTaskDialogStore((s) => s.close)
   const editingHabit = useHabitDialogStore((s) => s.editingHabit)
@@ -56,12 +57,14 @@ function AuthenticatedLayout() {
   const createHabit = useCreateHabit()
   const updateHabit = useUpdateHabit()
   const qc = useQueryClient()
+  const carryForward = useCarryForward()
+  const mutateCarryForward = carryForward.mutate
 
   useEffect(() => {
-    activeTasksApi.carryForward().catch(() => {})
+    mutateCarryForward()
     startTodayRefresh(() => qc.invalidateQueries())
     return () => stopTodayRefresh()
-  }, [qc])
+  }, [qc, mutateCarryForward])
 
   const { handleSubmit: handleTaskSubmit, isPending: taskPending } = useEntityFormSubmit({
     editing: editingTask,

@@ -60,7 +60,7 @@ export function SignInForm() {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="text-center">
-        <h1 className="font-heading text-3xl font-heading">Minimal Market</h1>
+        <h1 className="font-heading text-3xl">Miniflow</h1>
         <p className="mt-2 text-muted-foreground">Your productivity workspace</p>
       </div>
 

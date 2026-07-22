@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { Component, type ReactNode } from "react"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
@@ -38,11 +39,11 @@ class FallbackErrorBoundary extends Component<
 
 describe("ErrorBoundary", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(() => {})
+    vi.spyOn(console, "error").mockImplementation(() => {})
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it("renders children when no error", () => {

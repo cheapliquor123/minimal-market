@@ -1,12 +1,13 @@
+import { vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useNotesFilters } from "@/features/notes/hooks/use-notes-filters"
 
 beforeEach(() => {
-  jest.useFakeTimers()
+  vi.useFakeTimers()
 })
 
 afterEach(() => {
-  jest.useRealTimers()
+  vi.useRealTimers()
 })
 
 describe("useNotesFilters", () => {
@@ -37,7 +38,7 @@ describe("useNotesFilters", () => {
     expect(result.current.debouncedSearch).toBe("")
 
     act(() => {
-      jest.advanceTimersByTime(300)
+      vi.advanceTimersByTime(300)
     })
 
     expect(result.current.debouncedSearch).toBe("test")
@@ -51,7 +52,7 @@ describe("useNotesFilters", () => {
     })
 
     act(() => {
-      jest.advanceTimersByTime(200)
+      vi.advanceTimersByTime(200)
     })
 
     expect(result.current.debouncedSearch).toBe("")

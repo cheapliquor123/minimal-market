@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { CategoryPicker } from "@/features/tasks/components/category-picker"
@@ -9,13 +10,13 @@ const defaultProps = {
     createMockCategory({ id: "c1", name: "Work", color: "#ff6b9d" }),
     createMockCategory({ id: "c2", name: "Personal", color: "#7a83ff" }),
   ],
-  onChange: jest.fn(),
-  onCreateCategory: jest.fn(),
+  onChange: vi.fn(),
+  onCreateCategory: vi.fn(),
   isCreatingPending: false,
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("CategoryPicker", () => {
@@ -33,7 +34,7 @@ describe("CategoryPicker", () => {
   describe("category selection", () => {
     it("calls onChange with category name when clicked", async () => {
       const user = userEvent.setup()
-      const onChange = jest.fn()
+      const onChange = vi.fn()
       renderWithProviders(
         <CategoryPicker {...defaultProps} onChange={onChange} />,
       )
@@ -44,7 +45,7 @@ describe("CategoryPicker", () => {
 
     it("deselects when clicking selected category", async () => {
       const user = userEvent.setup()
-      const onChange = jest.fn()
+      const onChange = vi.fn()
       renderWithProviders(
         <CategoryPicker {...defaultProps} value="Work" onChange={onChange} />,
       )
@@ -65,7 +66,7 @@ describe("CategoryPicker", () => {
 
     it("calls onCreateCategory when save is clicked", async () => {
       const user = userEvent.setup()
-      const onCreateCategory = jest.fn()
+      const onCreateCategory = vi.fn()
       renderWithProviders(
         <CategoryPicker {...defaultProps} onCreateCategory={onCreateCategory} />,
       )
@@ -79,7 +80,7 @@ describe("CategoryPicker", () => {
 
     it("does not call onCreateCategory with empty name", async () => {
       const user = userEvent.setup()
-      const onCreateCategory = jest.fn()
+      const onCreateCategory = vi.fn()
       renderWithProviders(
         <CategoryPicker {...defaultProps} onCreateCategory={onCreateCategory} />,
       )
