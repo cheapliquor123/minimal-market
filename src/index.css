@@ -43,7 +43,7 @@
   --muted-foreground: #a89bc2;
 
   --main: #ff6b9d;
-  --main-foreground: #000000;
+  --main-foreground: #ffffff;
   --secondary: #ffd93d;
   --secondary-foreground: #000000;
   --success: #6bcb77;
@@ -51,7 +51,7 @@
   --warning: #ff7a05;
   --warning-foreground: #000000;
   --destructive: #ff4d50;
-  --destructive-foreground: #000000;
+  --destructive-foreground: #ffffff;
   --info: #7a83ff;
   --info-foreground: #000000;
 
@@ -112,15 +112,15 @@
     font-family: var(--font-family-base);
     background-color: var(--background);
     background-image:
-      linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+      linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
   .dark body {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   }
 
   h1, h2, h3, h4, h5, h6 {

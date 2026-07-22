@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { type ReactNode } from "react"
@@ -5,30 +6,30 @@ import { useNotes, useCreateNote, useUpdateNote, useDeleteNote } from "@/feature
 import { useFolders, useCreateFolder, useUpdateFolder, useDeleteFolder } from "@/features/notes/hooks/use-folders"
 import { createMockNote, createMockFolder } from "../test-utils"
 
-jest.mock("@/features/notes/api/notes-api-switch", () => ({
+vi.mock("@/features/notes/api/notes-api-switch", () => ({
   activeNotesApi: {
-    list: jest.fn(),
-    get: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    list: vi.fn(),
+    get: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   },
 }))
 
-jest.mock("@/features/notes/api/folders-api-switch", () => ({
+vi.mock("@/features/notes/api/folders-api-switch", () => ({
   activeFoldersApi: {
-    list: jest.fn(),
-    get: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    list: vi.fn(),
+    get: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   },
 }))
 
 import { activeNotesApi } from "@/features/notes/api/notes-api-switch"
 import { activeFoldersApi } from "@/features/notes/api/folders-api-switch"
-const mockNotesApi = jest.mocked(activeNotesApi)
-const mockFoldersApi = jest.mocked(activeFoldersApi)
+const mockNotesApi = vi.mocked(activeNotesApi)
+const mockFoldersApi = vi.mocked(activeFoldersApi)
 
 function createWrapper() {
   const client = new QueryClient({
@@ -41,7 +42,7 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("useNotes", () => {

@@ -1,3 +1,4 @@
+import { logger } from "@/shared/lib/logger"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { habitsApi } from "../api/habits"
 import { handleMutationError } from "@/shared/lib/errors"
@@ -29,7 +30,7 @@ export function useCreateHabit() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to create habit:", err)
+      logger.error("Failed to create habit:", err)
       handleMutationError(err)
     },
   })
@@ -45,7 +46,7 @@ export function useUpdateHabit() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to update habit:", err)
+      logger.error("Failed to update habit:", err)
       handleMutationError(err)
     },
   })
@@ -60,7 +61,7 @@ export function useDeleteHabit() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to delete habit:", err)
+      logger.error("Failed to delete habit:", err)
       handleMutationError(err)
     },
   })

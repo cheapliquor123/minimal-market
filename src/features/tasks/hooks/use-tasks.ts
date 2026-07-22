@@ -1,3 +1,4 @@
+import { logger } from "@/shared/lib/logger"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { activeTasksApi as tasksApi } from "../api/api-switch"
 import { handleMutationError } from "@/shared/lib/errors"
@@ -29,7 +30,7 @@ export function useCreateTask() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to create task:", err)
+      logger.error("Failed to create task:", err)
       handleMutationError(err)
     },
   })
@@ -45,7 +46,7 @@ export function useUpdateTask() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to update task:", err)
+      logger.error("Failed to update task:", err)
       handleMutationError(err)
     },
   })
@@ -60,8 +61,23 @@ export function useDeleteTask() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to delete task:", err)
+      logger.error("Failed to delete task:", err)
       handleMutationError(err)
+    },
+  })
+}
+
+export function useCarryForward() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => tasksApi.carryForward(),
+    onError: (err) => {
+      logger.error("Failed to carry forward tasks:", err)
+      handleMutationError(err)
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
   })
 }
@@ -94,7 +110,7 @@ export function useToggleTask() {
           qc.setQueryData(key, data)
         }
       }
-      console.error("Failed to toggle task:", err)
+      logger.error("Failed to toggle task:", err)
       handleMutationError(err)
     },
     onSettled: () => {

@@ -107,6 +107,13 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
       <Badge variant={priority.variant} className="hidden sm:inline-flex">
         {priority.label}
       </Badge>
+      <span
+        className={`size-2 rounded-full sm:hidden ${
+          task.priority === "high" ? "bg-destructive" :
+          task.priority === "medium" ? "bg-warning" :
+          "bg-info"
+        }`}
+      />
 
       <div onClick={(e) => e.stopPropagation()}>
         <DropdownMenu>

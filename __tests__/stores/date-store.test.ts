@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { renderHook } from "@testing-library/react"
 import { useDateStore, useToday, startTodayRefresh, stopTodayRefresh } from "@/stores/date-store"
 
@@ -40,37 +41,37 @@ describe("useToday hook", () => {
 
 describe("startTodayRefresh / stopTodayRefresh", () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
     stopTodayRefresh()
   })
 
   it("starts interval and fires on date change", () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     startTodayRefresh(callback)
 
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
-    jest.setSystemTime(tomorrow)
+    vi.setSystemTime(tomorrow)
 
-    jest.advanceTimersByTime(60_000)
+    vi.advanceTimersByTime(60_000)
 
     expect(callback).toHaveBeenCalled()
   })
 
   it("stopTodayRefresh prevents further callbacks", () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     startTodayRefresh(callback)
     stopTodayRefresh()
 
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
-    jest.setSystemTime(tomorrow)
+    vi.setSystemTime(tomorrow)
 
-    jest.advanceTimersByTime(120_000)
+    vi.advanceTimersByTime(120_000)
 
     expect(callback).not.toHaveBeenCalled()
   })
@@ -78,7 +79,7 @@ describe("startTodayRefresh / stopTodayRefresh", () => {
   it("does not start a second interval", () => {
     startTodayRefresh()
     startTodayRefresh()
-    jest.advanceTimersByTime(120_000)
+    vi.advanceTimersByTime(120_000)
     stopTodayRefresh()
   })
 })

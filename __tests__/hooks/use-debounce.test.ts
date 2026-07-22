@@ -1,12 +1,13 @@
+import { vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useDebounce } from "@/shared/hooks/use-debounce"
 
 beforeEach(() => {
-  jest.useFakeTimers()
+  vi.useFakeTimers()
 })
 
 afterEach(() => {
-  jest.useRealTimers()
+  vi.useRealTimers()
 })
 
 describe("useDebounce", () => {
@@ -25,7 +26,7 @@ describe("useDebounce", () => {
     expect(result.current).toBe("first")
 
     act(() => {
-      jest.advanceTimersByTime(200)
+      vi.advanceTimersByTime(200)
     })
     expect(result.current).toBe("first")
   })
@@ -38,7 +39,7 @@ describe("useDebounce", () => {
 
     rerender({ value: "second", delay: 300 })
     act(() => {
-      jest.advanceTimersByTime(300)
+      vi.advanceTimersByTime(300)
     })
     expect(result.current).toBe("second")
   })
@@ -50,19 +51,19 @@ describe("useDebounce", () => {
     )
 
     act(() => {
-      jest.advanceTimersByTime(200)
+      vi.advanceTimersByTime(200)
     })
 
     rerender({ value: "b", delay: 300 })
 
     act(() => {
-      jest.advanceTimersByTime(200)
+      vi.advanceTimersByTime(200)
     })
 
     rerender({ value: "c", delay: 300 })
 
     act(() => {
-      jest.advanceTimersByTime(300)
+      vi.advanceTimersByTime(300)
     })
 
     expect(result.current).toBe("c")
@@ -78,7 +79,7 @@ describe("useDebounce", () => {
     expect(result.current).toBe(0)
 
     act(() => {
-      jest.advanceTimersByTime(100)
+      vi.advanceTimersByTime(100)
     })
     expect(result.current).toBe(42)
   })

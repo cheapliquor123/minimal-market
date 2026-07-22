@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { TaskFilters } from "@/features/tasks/components/task-filters"
@@ -9,7 +10,7 @@ const defaultFilters: TaskFiltersType = { status: "active", priority: "all" }
 describe("TaskFilters", () => {
   it("renders status filter buttons", () => {
     renderWithProviders(
-      <TaskFilters filters={defaultFilters} onChange={jest.fn()} />,
+      <TaskFilters filters={defaultFilters} onChange={vi.fn()} />,
     )
 
     expect(screen.getAllByRole("button", { name: /all/i }).length).toBeGreaterThanOrEqual(1)
@@ -19,7 +20,7 @@ describe("TaskFilters", () => {
 
   it("renders priority filter buttons", () => {
     renderWithProviders(
-      <TaskFilters filters={defaultFilters} onChange={jest.fn()} />,
+      <TaskFilters filters={defaultFilters} onChange={vi.fn()} />,
     )
 
     const priorityButtons = screen.getAllByText(/all|high|med|low/i)
@@ -28,7 +29,7 @@ describe("TaskFilters", () => {
 
   it("renders search input", () => {
     renderWithProviders(
-      <TaskFilters filters={defaultFilters} onChange={jest.fn()} />,
+      <TaskFilters filters={defaultFilters} onChange={vi.fn()} />,
     )
 
     expect(screen.getByPlaceholderText("Search tasks...")).toBeInTheDocument()
@@ -37,7 +38,7 @@ describe("TaskFilters", () => {
   describe("status filter interactions", () => {
     it("calls onChange with active status when Active is clicked", async () => {
       const user = userEvent.setup()
-      const onChange = jest.fn()
+      const onChange = vi.fn()
       renderWithProviders(
         <TaskFilters filters={defaultFilters} onChange={onChange} />,
       )
@@ -50,7 +51,7 @@ describe("TaskFilters", () => {
 
     it("calls onChange with completed status when Done is clicked", async () => {
       const user = userEvent.setup()
-      const onChange = jest.fn()
+      const onChange = vi.fn()
       renderWithProviders(
         <TaskFilters filters={defaultFilters} onChange={onChange} />,
       )
@@ -66,7 +67,7 @@ describe("TaskFilters", () => {
   describe("priority filter interactions", () => {
     it("calls onChange with high priority", async () => {
       const user = userEvent.setup()
-      const onChange = jest.fn()
+      const onChange = vi.fn()
       renderWithProviders(
         <TaskFilters filters={defaultFilters} onChange={onChange} />,
       )
@@ -82,7 +83,7 @@ describe("TaskFilters", () => {
   describe("search interaction", () => {
     it("calls onChange with search text when typing", async () => {
       const user = userEvent.setup()
-      const onChange = jest.fn()
+      const onChange = vi.fn()
       renderWithProviders(
         <TaskFilters filters={defaultFilters} onChange={onChange} />,
       )

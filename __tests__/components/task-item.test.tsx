@@ -1,3 +1,4 @@
+import { vi } from "vitest"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { TaskItem } from "@/features/tasks/components/task-item"
@@ -22,9 +23,9 @@ function daysFromNow(n: number): string {
 }
 
 const defaultProps = {
-  onToggle: jest.fn(),
-  onEdit: jest.fn(),
-  onDelete: jest.fn(),
+  onToggle: vi.fn(),
+  onEdit: vi.fn(),
+  onDelete: vi.fn(),
 }
 
 function renderTask(task: Partial<Task> = {}) {
@@ -39,7 +40,7 @@ function renderTask(task: Partial<Task> = {}) {
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("TaskItem", () => {
@@ -124,13 +125,13 @@ describe("TaskItem", () => {
   describe("interactions", () => {
     it("calls onToggle when checkbox is clicked", async () => {
       const user = userEvent.setup()
-      const onToggle = jest.fn()
+      const onToggle = vi.fn()
       renderWithProviders(
         <TaskItem
           task={createMockTask({ id: "t-1" })}
           onToggle={onToggle}
-          onEdit={jest.fn()}
-          onDelete={jest.fn()}
+          onEdit={vi.fn()}
+          onDelete={vi.fn()}
         />,
       )
 

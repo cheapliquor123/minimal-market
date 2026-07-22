@@ -1,3 +1,4 @@
+import { logger } from "@/shared/lib/logger"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { activeNotesApi } from "../api/notes-api-switch"
 import { handleMutationError } from "@/shared/lib/errors"
@@ -20,7 +21,7 @@ export function useCreateNote() {
       qc.invalidateQueries({ queryKey: NOTES_KEY })
     },
     onError: (err) => {
-      console.error("Failed to create note:", err)
+      logger.error("Failed to create note:", err)
       handleMutationError(err)
     },
   })
@@ -35,7 +36,7 @@ export function useUpdateNote() {
       qc.invalidateQueries({ queryKey: NOTES_KEY })
     },
     onError: (err) => {
-      console.error("Failed to update note:", err)
+      logger.error("Failed to update note:", err)
       handleMutationError(err)
     },
   })
@@ -49,7 +50,7 @@ export function useDeleteNote() {
       qc.invalidateQueries({ queryKey: NOTES_KEY })
     },
     onError: (err) => {
-      console.error("Failed to delete note:", err)
+      logger.error("Failed to delete note:", err)
       handleMutationError(err)
     },
   })

@@ -16,9 +16,13 @@ interface ApiError {
   status: number
 }
 
+interface RequestOptions extends RequestInit {
+  signal?: AbortSignal
+}
+
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {},
+  options: RequestOptions = {},
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`
 
@@ -33,9 +37,11 @@ async function request<T>(
     headers["Authorization"] = `Bearer ${token}`
   }
 
+  const { signal, ...rest } = options
   const config: RequestInit = {
-    ...options,
+    ...rest,
     headers,
+    signal,
   }
 
   const response = await fetch(url, config)
@@ -65,28 +71,32 @@ async function request<T>(
 }
 
 export const api = {
-  get: <T,>(endpoint: string) => request<T>(endpoint),
+  get: <T,>(endpoint: string, signal?: AbortSignal) =>
+    request<T>(endpoint, { signal }),
 
-  post: <T,>(endpoint: string, data?: unknown) =>
+  post: <T,>(endpoint: string, data?: unknown, signal?: AbortSignal) =>
     request<T>(endpoint, {
       method: "POST",
       body: data ? JSON.stringify(data) : undefined,
+      signal,
     }),
 
-  put: <T,>(endpoint: string, data: unknown) =>
+  put: <T,>(endpoint: string, data: unknown, signal?: AbortSignal) =>
     request<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(data),
+      signal,
     }),
 
-  patch: <T,>(endpoint: string, data?: unknown) =>
+  patch: <T,>(endpoint: string, data?: unknown, signal?: AbortSignal) =>
     request<T>(endpoint, {
       method: "PATCH",
       body: data ? JSON.stringify(data) : undefined,
+      signal,
     }),
 
-  delete: <T,>(endpoint: string) =>
-    request<T>(endpoint, { method: "DELETE" }),
+  delete: <T,>(endpoint: string, signal?: AbortSignal) =>
+    request<T>(endpoint, { method: "DELETE", signal }),
 }
 
 export type { ApiResponse, ApiError }

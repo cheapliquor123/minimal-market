@@ -44,7 +44,7 @@ export function MonthView({ currentDate, selectedDate, dataByDate, onSelectDate 
               type="button"
               onClick={() => onSelectDate(day)}
               className={cn(
-                "relative flex min-h-[72px] flex-col gap-1 rounded-base border-2 p-1.5 text-left transition-all",
+                "relative flex min-h-[48px] min-w-[48px] flex-col gap-1 rounded-base border-2 p-1.5 text-left transition-all",
                 inMonth
                   ? "border-border bg-secondary-background"
                   : "border-transparent bg-background/50",

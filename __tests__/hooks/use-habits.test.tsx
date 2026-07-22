@@ -1,21 +1,22 @@
+import { vi } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { type ReactNode } from "react"
 import { useHabits, useCreateHabit, useUpdateHabit, useDeleteHabit } from "@/features/habits/hooks/use-habits"
 import { createMockHabit } from "../test-utils"
 
-jest.mock("@/features/habits/api/habits", () => ({
+vi.mock("@/features/habits/api/habits", () => ({
   habitsApi: {
-    list: jest.fn(),
-    get: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    list: vi.fn(),
+    get: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   },
 }))
 
 import { habitsApi } from "@/features/habits/api/habits"
-const mockApi = jest.mocked(habitsApi)
+const mockApi = vi.mocked(habitsApi)
 
 function createWrapper() {
   const client = new QueryClient({
@@ -28,7 +29,7 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("useHabits", () => {

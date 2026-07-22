@@ -1,19 +1,20 @@
+import { vi } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { type ReactNode } from "react"
 import { useCategories, useCreateCategory, useDeleteCategory } from "@/features/tasks/hooks/use-categories"
 import { createMockCategory } from "../test-utils"
 
-jest.mock("@/features/tasks/api/categories", () => ({
+vi.mock("@/features/tasks/api/categories", () => ({
   categoriesApi: {
-    list: jest.fn(),
-    create: jest.fn(),
-    remove: jest.fn(),
+    list: vi.fn(),
+    create: vi.fn(),
+    remove: vi.fn(),
   },
 }))
 
 import { categoriesApi } from "@/features/tasks/api/categories"
-const mockApi = jest.mocked(categoriesApi)
+const mockApi = vi.mocked(categoriesApi)
 
 function createWrapper() {
   const client = new QueryClient({
@@ -26,7 +27,7 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("useCategories", () => {

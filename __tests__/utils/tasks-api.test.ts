@@ -1,19 +1,20 @@
+import { vi } from "vitest"
 import { tasksApi } from "@/features/tasks/api/tasks"
 import { api } from "@/shared/lib/api"
 
-jest.mock("@/shared/lib/api", () => ({
+vi.mock("@/shared/lib/api", () => ({
   api: {
-    get: jest.fn(),
-    post: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
+    get: vi.fn(),
+    post: vi.fn(),
+    patch: vi.fn(),
+    delete: vi.fn(),
   },
 }))
 
-const mockApi = jest.mocked(api)
+const mockApi = vi.mocked(api)
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
 })
 
 describe("tasksApi.list", () => {

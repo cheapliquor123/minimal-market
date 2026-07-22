@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Plus } from "lucide-react"
 import { PageHeader } from "@/shared/components/layout/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { Badge } from "@/shared/components/ui/badge"
@@ -10,6 +10,7 @@ import { useTasks, useToggleTask } from "@/features/tasks/hooks/use-tasks"
 import { useHabits } from "@/features/habits/hooks/use-habits"
 import { useHabitLogs, calculateStreaks, getTodayLogs } from "@/features/habits/hooks/use-habit-logs"
 import { useToday } from "@/stores/date-store"
+import { useTaskDialogStore } from "@/stores/task-dialog-store"
 import type { Task } from "@/features/tasks/types"
 
 function MiniTaskItem({ task, onToggle }: { task: Task; onToggle: (id: string) => void }) {
@@ -69,6 +70,7 @@ function MiniHabitItem({
 
 export function WorkspacePage() {
   const today = useToday()
+  const openCreate = useTaskDialogStore((s) => s.openCreate)
   const { data: activeTasks = [], error: tasksError } = useTasks({ status: "active" })
   const toggleTask = useToggleTask()
   const { data: habits = [], error: habitsError } = useHabits()
@@ -86,6 +88,12 @@ export function WorkspacePage() {
       <PageHeader
         title="Workspace"
         description="Your daily command center"
+        action={
+          <Button onClick={() => openCreate()} className="bg-main text-main-foreground border-2 border-border shadow-shadow hover:shadow-none hover:-translate-x-[1px] hover:-translate-y-[1px]">
+            <Plus className="size-4" />
+            Add task
+          </Button>
+        }
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

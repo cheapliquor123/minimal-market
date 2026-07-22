@@ -6,7 +6,7 @@ export function NavbarLogo() {
       to="/"
       className="flex items-center gap-2 font-heading text-lg text-foreground transition-colors hover:text-main"
     >
-      Minimal Market
+      Miniflow
     </Link>
   )
 }

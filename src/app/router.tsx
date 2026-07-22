@@ -12,18 +12,10 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 const SignInPage = () => import("@/features/auth/pages/sign-in-page")
 const SignUpPage = () => import("@/features/auth/pages/sign-up-page")
 
-function PageLoader() {
-  return (
-    <div className="flex h-64 items-center justify-center">
-      <div className="size-8 animate-spin rounded-base border-4 border-border border-t-main" />
-    </div>
-  )
-}
-
 function withSuspense(Page: React.ComponentType) {
   return (
     <ErrorBoundary>
-      <Suspense fallback={<PageLoader />}>
+      <Suspense>
         <Page />
       </Suspense>
     </ErrorBoundary>

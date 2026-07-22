@@ -1,6 +1,12 @@
-import { Check, Clock, Hash, Play, Square } from "lucide-react"
+import { Check, Clock, Hash, MoreHorizontal, Pencil, Play, Square, Trash2 } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Badge } from "@/shared/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu"
 import { cn } from "@/shared/lib/utils"
 import { useTimer } from "../hooks/use-timer"
 import type { Habit, HabitLog } from "../types"
@@ -122,7 +128,7 @@ export function HabitCard({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 rounded-base border-2 border-border bg-secondary-background p-4 shadow-shadow transition-all",
+        "group flex flex-col gap-3 rounded-base border-2 border-border bg-secondary-background p-4 shadow-shadow transition-all",
         "hover:-translate-y-[1px] hover:shadow-none",
       )}
     >
@@ -193,22 +199,31 @@ export function HabitCard({
           </Button>
         )}
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onEdit(habit)}
-          className="px-2"
-        >
-          Edit
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onDelete(habit.id)}
-          className="px-2 text-destructive"
-        >
-          Del
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="Habit actions"
+            >
+              <MoreHorizontal className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEdit(habit)}>
+              <Pencil className="size-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onDelete(habit.id)}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="size-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

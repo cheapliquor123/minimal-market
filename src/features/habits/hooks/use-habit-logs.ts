@@ -1,3 +1,4 @@
+import { logger } from "@/shared/lib/logger"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { habitLogsApi } from "../api/habit-logs"
 import { handleMutationError } from "@/shared/lib/errors"
@@ -35,7 +36,7 @@ export function useLogHabit() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to log habit:", err)
+      logger.error("Failed to log habit:", err)
       handleMutationError(err)
     },
   })
@@ -50,19 +51,20 @@ export function useDeleteLog() {
       qc.invalidateQueries({ queryKey: QUERY_KEY })
     },
     onError: (err) => {
-      console.error("Failed to delete log:", err)
+      logger.error("Failed to delete log:", err)
       handleMutationError(err)
     },
   })
 }
 
 function calculateStreak(logs: HabitLog[], habitId: string, type: Habit["type"], goal: number | null): number {
+  const habitLogs = logs.filter((l) => l.habitId === habitId)
+  if (habitLogs.length === 0) return 0
+
   const logMap = new Map<string, number>()
-  for (const log of logs) {
-    if (log.habitId === habitId) {
-      const existing = logMap.get(log.date) ?? 0
-      logMap.set(log.date, Math.max(existing, log.value))
-    }
+  for (const log of habitLogs) {
+    const existing = logMap.get(log.date) ?? 0
+    logMap.set(log.date, Math.max(existing, log.value))
   }
 
   let streak = 0
